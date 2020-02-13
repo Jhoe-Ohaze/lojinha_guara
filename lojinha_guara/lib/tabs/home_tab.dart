@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -32,36 +33,51 @@ class HomeTab extends StatelessWidget
       children: <Widget>
       [
         _buildBodyBack(),
+        Container
+        (
+          height: 85.0,
+          child: Image
+          (
+            image: AssetImage("MyAssets/Custom_Bar.png"),
+            alignment: Alignment.topCenter,
+            fit: BoxFit.fitHeight,
+          ),
+        ),
+        Positioned
+        (
+          width: MediaQuery.of(context).size.width,
+          top: 30,
+          child: Image
+          (
+            image: AssetImage("MyAssets/Logo_Bar.png"),
+            alignment: Alignment.bottomCenter,
+            height: 50,
+          ),
+        ),
+
         CustomScrollView
         (
           slivers: <Widget>
           [
             SliverAppBar
             (
-              floating: true,
-              snap: true,
+              floating: false,
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               flexibleSpace: FlexibleSpaceBar
               (
-                title: const Text("Novidades"),
+                title: Container(),
                 centerTitle: true,
               ),
             ),
-            
+
             FutureBuilder<QuerySnapshot>
             (
-              future: Firestore.instance.collection("homeImages").orderBy("id").getDocuments(),
+              future: Firestore.instance.collection("market_images").orderBy("id").getDocuments(),
               builder: (context, snapshot)
               {
                 if(!snapshot.hasData)
                 {
-                  Firestore.instance
-                      .collection('tasks')
-                      .add({
-                    "title": "oi",
-                    "description": "oi"
-                  });
                   return SliverToBoxAdapter
                   (
                     child: Container
@@ -96,25 +112,27 @@ class HomeTab extends StatelessWidget
                     crossAxisCount: 2,
                     mainAxisSpacing: 1.0,
                     crossAxisSpacing: 1.0,
-                    staggeredTiles: snapshot.data.documents.map
-                    (
-                      (doc)
-                      {
-                        return StaggeredTile.count(doc.data["x"], doc.data["y"]);
-                      }
-                    ).toList(),
-                    children: snapshot.data.documents.map
-                    (
-                      (doc)
-                      {
-                        return Container(height: 200, color: Colors.green,);
-                      },
-                    ).toList(),
-                  );
+                    staggeredTiles: snapshot.data.documents.map((doc)
+                    {
+                      return StaggeredTile.count(doc.data["x"], doc.data["y"]);
+                    }
+                  ).toList(),
+                  children: snapshot.data.documents.map
+                  (
+                    (doc)
+                    {
+                      return FadeInImage.memoryNetwork
+                      (
+                        placeholder: kTransparentImage,
+                        image: doc.data["url"],
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ).toList());
                 }
               },
             )
-          ],
+          ]
         )
       ],
     );
