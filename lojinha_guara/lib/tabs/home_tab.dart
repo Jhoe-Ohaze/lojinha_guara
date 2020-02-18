@@ -6,6 +6,7 @@ import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatelessWidget
 {
+  final _scrollController = ScrollController();
   @override
   Widget build(BuildContext context)
   {
@@ -33,40 +34,26 @@ class HomeTab extends StatelessWidget
       children: <Widget>
       [
         _buildBodyBack(),
-        Container
-        (
-          height: 85.0,
-          child: Image
-          (
-            image: AssetImage("MyAssets/Custom_Bar.png"),
-            alignment: Alignment.topCenter,
-            fit: BoxFit.fitHeight,
-          ),
-        ),
-        Positioned
-        (
-          width: MediaQuery.of(context).size.width,
-          top: 30,
-          child: Image
-          (
-            image: AssetImage("MyAssets/Logo_Bar.png"),
-            alignment: Alignment.bottomCenter,
-            height: 50,
-          ),
-        ),
 
         CustomScrollView
         (
+          controller: _scrollController,
           slivers: <Widget>
           [
             SliverAppBar
             (
               floating: false,
+              leading: MaterialButton
+              (
+                height: 80,
+                child: Image(image: AssetImage("MyAssets/logo_ball.png"),),
+                onPressed: (){Scaffold.of(context).openDrawer();},
+              ),
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               flexibleSpace: FlexibleSpaceBar
               (
-                title: Container(),
+                title: Image(image: AssetImage("MyAssets/logo_ball.png")),
                 centerTitle: true,
               ),
             ),
