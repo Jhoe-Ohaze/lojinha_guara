@@ -17,11 +17,11 @@ class HomeScreen extends StatelessWidget
       [
         Scaffold
         (
-          body: HomeTab(),
+          body: ProductTab(),
           drawer: CustomDrawer(_pageController),
         ),
         Scaffold
-          (
+        (
           body: Container(color: Colors.red,),
           drawer: CustomDrawer(_pageController),
         ),

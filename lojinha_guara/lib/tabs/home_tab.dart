@@ -1,127 +1,93 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class HomeTab extends StatelessWidget
+class ProductTab extends StatelessWidget
 {
-  final _scrollController = ScrollController();
   @override
   Widget build(BuildContext context)
   {
-    double screenHeight = MediaQuery.of(context).size.height;
+    return TabBody();
+  }
 
-    Widget _buildBodyBack() => Container
-    (
-      decoration: BoxDecoration
-      (
-        gradient: LinearGradient
-        (
-          colors:
-          [
-            Color(0xFF4580CA),
-            Color(0xFF9AD2FA),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        )
-      ),
-    );
-
-    return Stack
+  Widget TabBody()
+  {
+    return Column
     (
       children: <Widget>
       [
-        _buildBodyBack(),
-
-        CustomScrollView
+        AppBar
         (
-          controller: _scrollController,
-          slivers: <Widget>
+          title: Text
+          (
+            "Bilheteria",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Color(0xFFFFFFFF)),
+          ),
+          centerTitle: true,
+        ),
+        Stack
+        (
+          children: <Widget>
           [
-            SliverAppBar
+            Container(color: Color(0xFF88BBDD)),
+            Expanded
             (
-              floating: false,
-              leading: MaterialButton
+              child: FutureBuilder<QuerySnapshot>
               (
-                height: 80,
-                child: Image(image: AssetImage("MyAssets/logo_ball.png"),),
-                onPressed: (){Scaffold.of(context).openDrawer();},
-              ),
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              flexibleSpace: FlexibleSpaceBar
-              (
-                title: Image(image: AssetImage("MyAssets/logo_ball.png")),
-                centerTitle: true,
-              ),
-            ),
-
-            FutureBuilder<QuerySnapshot>
-            (
-              future: Firestore.instance.collection("market_images").orderBy("id").getDocuments(),
-              builder: (context, snapshot)
-              {
-                if(!snapshot.hasData)
+                future: Firestore.instance.collection("market_images").orderBy("id").getDocuments(),
+                builder: (context, snapshot)
                 {
-                  return SliverToBoxAdapter
-                  (
-                    child: Container
+                  if(!snapshot.hasData)
+                  {
+                    return Expanded(child: Center(child: CircularProgressIndicator()));
+                  }
+                  else
+                  {
+                    List<DocumentSnapshot> tempList = snapshot.data.documents;
+                    return MaterialButton
                     (
-                      alignment: Alignment.bottomCenter,
-                      height: screenHeight/2 - screenHeight*0.0625,
-                      child: CircularProgressIndicator
+                      child: GridView.builder
                       (
-                        valueColor: AlwaysStoppedAnimation<Color>
+                        padding: EdgeInsets.all(10.0),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount
                         (
-                          Colors.white
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
                         ),
-                      ),
-                    ),
-                  );
+                        itemCount: tempList.length,
+                        itemBuilder: (context, index)
+                        {
+                          Iterable<String> imageUrl = snapshot.data.documents.map((doc){return doc.data["url"];});
+                          return GestureDetector
+                          (
+                            child: Stack
+                            (
+                              children: <Widget>
+                              [
+                                FadeInImage.memoryNetwork
+                                (
+                                  placeholder: kTransparentImage,
+                                  image: imageUrl.elementAt(index),
+                                  height: 300.0,
+                                  fit: BoxFit.cover,
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      )
+                    );
+                  }
                 }
-                else if(snapshot.data.documents.isEmpty)
-                {
-                  return SliverToBoxAdapter
-                  (
-                    child: Container
-                    (
-                      color: Colors.green,
-                      height: 200.0,
-                    ),
-                  );
-                }
-                else
-                {
-                  return SliverStaggeredGrid.count
-                  (
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 1.0,
-                    crossAxisSpacing: 1.0,
-                    staggeredTiles: snapshot.data.documents.map((doc)
-                    {
-                      return StaggeredTile.count(doc.data["x"], doc.data["y"]);
-                    }
-                  ).toList(),
-                  children: snapshot.data.documents.map
-                  (
-                    (doc)
-                    {
-                      return FadeInImage.memoryNetwork
-                      (
-                        placeholder: kTransparentImage,
-                        image: doc.data["url"],
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  ).toList());
-                }
-              },
+              ),
             )
-          ]
+          ],
         )
       ],
     );
   }
 }
+
