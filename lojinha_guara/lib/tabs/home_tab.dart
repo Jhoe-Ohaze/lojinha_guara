@@ -121,8 +121,9 @@ class ProductTab extends StatelessWidget
                                       "R\$" + productMap.elementAt(index)["preco"].toString(),
                                       style: TextStyle
                                       (
-                                        fontSize: 16.0,
+                                        fontSize: 15.0,
                                         color: Colors.white,
+                                        fontStyle: FontStyle.italic,
                                         fontWeight: FontWeight.normal
                                       ),
                                     )
