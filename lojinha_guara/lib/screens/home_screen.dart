@@ -26,12 +26,12 @@ class HomeScreen extends StatelessWidget
           drawer: CustomDrawer(_pageController),
         ),
         Scaffold
-          (
+        (
           body: Container(color: Colors.blue,),
           drawer: CustomDrawer(_pageController),
         ),
         Scaffold
-          (
+        (
           body: Container(color: Colors.green,),
           drawer: CustomDrawer(_pageController),
         ),
