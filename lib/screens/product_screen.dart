@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProductScreen extends StatefulWidget
 {
@@ -48,15 +49,30 @@ class _ProductScreenState extends State<ProductScreen>
           Divider(),
           Row
           (
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>
             [
               Text("Quantidade"),
               IconButton(icon: Icon(Icons.remove), onPressed: (){},),
-              TextField
+              Container
               (
-                keyboardType: TextInputType.numberWithOptions(),
-                controller: _fieldController,
-              )
+                width: 50,
+                child: TextField
+                (
+                  cursorColor: Color(0x00ffffff),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.numberWithOptions(),
+                  controller: _fieldController,
+                  inputFormatters: <TextInputFormatter>
+                  [
+                    LengthLimitingTextInputFormatter(1),
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    BlacklistingTextInputFormatter.singleLineFormatter,
+                  ],
+                ),
+              ),
+              IconButton(icon: Icon(Icons.add), onPressed: (){},),
+              Divider()
             ],
           )
         ],

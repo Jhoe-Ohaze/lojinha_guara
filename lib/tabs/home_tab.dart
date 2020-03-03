@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lojinha_guara/screens/product_screen.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ProductTab extends StatelessWidget
@@ -12,8 +13,44 @@ class ProductTab extends StatelessWidget
   }
 
   ///////////////////////////////////////////////////
-  //////////////////* Background *///////////////////
+  /////////////////* Main Widget *///////////////////
+  Widget _tabBody()
+  {
+    return Column
+    (
+      children: <Widget>
+      [
+        AppBar
+          (
+          backgroundColor: Color(0xFFEE3522),
+          title: Text
+            (
+            "Bilheteria",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Color(0xFFFFFFFF)),
+          ),
+          centerTitle: true,
+        ),
+
+        Expanded
+        (
+          child: Stack
+            (
+            children: <Widget>
+            [
+              _buildBackground(),
+              _buildProducts(), //Products Slivers
+            ],
+          ),
+        )
+      ],
+    );
+  }
   ///////////////////////////////////////////////////
+  ///////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////
+  //////////////////* Background *///////////////////
   Widget _buildBackground()
   {
     return Container
@@ -35,11 +72,9 @@ class ProductTab extends StatelessWidget
   }
   ///////////////////////////////////////////////////
   ///////////////////////////////////////////////////
-  ///////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////
   ///////////////* Products Slivers *////////////////
-  ///////////////////////////////////////////////////
   Widget _buildProducts()
   {
     return FutureBuilder<QuerySnapshot>
@@ -54,26 +89,30 @@ class ProductTab extends StatelessWidget
         else
         {
           List<DocumentSnapshot> tempList = snapshot.data.documents;
-          return MaterialButton
+          return GridView.builder
           (
-            onPressed: (){},
-            child: GridView.builder
+            padding: EdgeInsets.all(10.0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount
             (
-              padding: EdgeInsets.all(10.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount
+              childAspectRatio: 0.75,
+              crossAxisCount: 2,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+            ),
+            itemCount: tempList.length,
+
+            /////////////////////////////////////////////////////////
+            /////////////////// Builder Function ////////////////////
+            itemBuilder: (context, index)
+            {
+              Iterable<Map> productMap = snapshot.data.documents.map((doc){return doc.data;});
+              return Stack
               (
-                childAspectRatio: 0.75,
-                crossAxisCount: 2,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ),
-              itemCount: tempList.length,
-              itemBuilder: (context, index)
-              {
-                Iterable<Map> productMap = snapshot.data.documents.map((doc){return doc.data;});
-                return ClipRRect
-                (
-                  borderRadius: BorderRadius.circular(8.0),
+                children: <Widget>
+                [
+                  ClipRRect
+                  (
+                    borderRadius: BorderRadius.circular(8.0),
                     child: Stack
                     (
                       children: <Widget>
@@ -82,62 +121,79 @@ class ProductTab extends StatelessWidget
                         (
                           placeholder: kTransparentImage,
                           image: productMap.elementAt(index)["url"],
-                          height: 600,
+                          height: double.infinity,
                           fit: BoxFit.cover,
                         ),
-                        Column
+                        Stack
                         (
-                          mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>
                           [
-                            Container
-                            (
-                              height: 70.0,
-                              color: Color(0xAA000000),
-                              child: Column
+                            Column
                               (
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: <Widget>
-                                [
-                                  Padding
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>
+                              [
+                                Container
                                   (
-                                    padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
-                                    child: Text
+                                  height: 70.0,
+                                  color: Color(0xAA000000),
+                                  child: Column
                                     (
-                                      productMap.elementAt(index)["Nome"],
-                                      style: TextStyle
-                                      (
-                                        fontSize: 20.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: <Widget>
+                                    [
+                                      Padding
+                                        (
+                                          padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
+                                          child: Text
+                                            (
+                                            productMap.elementAt(index)["Nome"],
+                                            style: TextStyle
+                                              (
+                                                fontSize: 20.0,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold
+                                            ),
+                                          )
                                       ),
-                                    )
+                                      Padding
+                                        (
+                                          padding: EdgeInsets.symmetric(horizontal: 11.0),
+                                          child: Text
+                                            (
+                                            "R\$" + productMap.elementAt(index)["preco"].toString(),
+                                            style: TextStyle
+                                              (
+                                                fontSize: 15.0,
+                                                color: Colors.white,
+                                                fontStyle: FontStyle.italic,
+                                                fontWeight: FontWeight.normal
+                                            ),
+                                          )
+                                      )
+                                    ],
                                   ),
-                                  Padding
-                                  (
-                                    padding: EdgeInsets.symmetric(horizontal: 11.0),
-                                    child: Text
-                                    (
-                                      "R\$" + productMap.elementAt(index)["preco"].toString(),
-                                      style: TextStyle
-                                      (
-                                        fontSize: 15.0,
-                                        color: Colors.white,
-                                        fontStyle: FontStyle.italic,
-                                        fontWeight: FontWeight.normal
-                                      ),
-                                    )
-                                  )
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                        MaterialButton
+                        (
+                          height: double.infinity,
+                          minWidth: double.infinity,
+                          onPressed: ()
+                          {
+                            Navigator.push(context, MaterialPageRoute
+                              (builder: (context) => ProductScreen(productMap.elementAt(index))));
+                          }
+                        ),
                       ],
                     ),
-                  );
-              }
-            )
+                  ),
+                ],
+              );
+            }
           );
         }
       }
@@ -145,39 +201,5 @@ class ProductTab extends StatelessWidget
   }
   ///////////////////////////////////////////////////
   ///////////////////////////////////////////////////
-  ///////////////////////////////////////////////////
-
-  Widget _tabBody()
-  {
-    return Column
-    (
-      children: <Widget>
-      [
-        AppBar
-        (
-          backgroundColor: Color(0xFFEE3522),
-          title: Text
-          (
-            "Bilheteria",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFFFFFFFF)),
-          ),
-          centerTitle: true,
-        ),
-
-        Expanded
-        (
-          child: Stack
-          (
-            children: <Widget>
-            [
-              _buildBackground(),
-              _buildProducts(), //Products Slivers
-            ],
-          ),
-        )
-      ],
-    );
-  }
 }
 
