@@ -16,8 +16,16 @@ class _ProductScreenState extends State<ProductScreen>
   final Map _productMap;
   String numbers = "0123456789";
   TextEditingController _fieldController;
+  int itemAmount = 0;
 
   _ProductScreenState(this._productMap);
+
+  @override
+  void initState()
+  {
+    super.initState();
+    _fieldController = new TextEditingController(text: itemAmount.toString());
+  }
 
   Widget _buildBody()
   {
@@ -46,19 +54,38 @@ class _ProductScreenState extends State<ProductScreen>
         children: <Widget>
         [
           _productImage,
+
           Divider(),
+
           Row
           (
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>
             [
-              Text("Quantidade"),
-              IconButton(icon: Icon(Icons.remove), onPressed: (){},),
+              IconButton
+              (
+                padding: EdgeInsets.all(10.0),
+                icon: Icon(Icons.remove_circle_outline),
+                iconSize: 30.0,
+                onPressed: ()
+                {
+                  setState(()
+                  {
+                    if(itemAmount > 0)
+                    {
+                      itemAmount--;
+                      _fieldController.text = itemAmount.toString();
+                    }
+                  });
+                }
+               ),
+
               Container
               (
-                width: 50,
+                width: 60,
                 child: TextField
                 (
+                  readOnly: true,
                   cursorColor: Color(0x00ffffff),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.numberWithOptions(),
@@ -69,10 +96,30 @@ class _ProductScreenState extends State<ProductScreen>
                     WhitelistingTextInputFormatter.digitsOnly,
                     BlacklistingTextInputFormatter.singleLineFormatter,
                   ],
+                  decoration: InputDecoration
+                  (
+                    border: OutlineInputBorder()
+                  ),
                 ),
               ),
-              IconButton(icon: Icon(Icons.add), onPressed: (){},),
-              Divider()
+
+              IconButton
+              (
+                padding: EdgeInsets.all(10.0),
+                icon: Icon(Icons.add_circle_outline),
+                iconSize: 30.0,
+                onPressed: ()
+                {
+                  setState(()
+                  {
+                    if(itemAmount < 9)
+                    {
+                      itemAmount++;
+                      _fieldController.text = itemAmount.toString();
+                    }
+                  });
+                }
+              ),
             ],
           )
         ],

@@ -64,7 +64,7 @@ class ProductTab extends StatelessWidget
             colors:
             [
               Color(0xFFAACCEE),
-              Color(0xFFFFFFFF),
+              Color(0xFFFFFFFF), 
             ]
         )
       ),
