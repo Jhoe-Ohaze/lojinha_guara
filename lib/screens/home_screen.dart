@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lojinha_guara/screens/product_screen.dart';
 import 'package:lojinha_guara/tabs/home_tab.dart';
 import 'package:lojinha_guara/widgets/custom_drawer.dart';
 
@@ -17,12 +18,12 @@ class HomeScreen extends StatelessWidget
       [
         Scaffold
         (
-          body: ProductTab(),
+          body: ProductScreen(),
           drawer: CustomDrawer(_pageController),
         ),
         Scaffold
         (
-          body: Container(color: Colors.red,),
+          body: ProductScreen(),
           drawer: CustomDrawer(_pageController),
         ),
         Scaffold
