@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget
       [
         Scaffold
         (
-          body: ProductScreen(),
+          body: HomeTab(),
           drawer: CustomDrawer(_pageController),
         ),
         Scaffold

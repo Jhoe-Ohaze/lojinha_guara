@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:intl/intl.dart';
 
 class ProductScreen extends StatefulWidget
 {
@@ -12,10 +12,15 @@ class _ProductScreenState extends State<ProductScreen>
 {
   TextEditingController _adultController;
   TextEditingController _kidController;
-  int itemAmount;
-  int adultAmount;
-  int kidAmount;
-  DateTime _currentDate = DateTime.now();
+  TextEditingController _dateController;
+  TextEditingController _valueController;
+
+  int itemAmount = 0;
+  int adultAmount = 0;
+  int kidAmount = 0;
+
+  DateTime _currentDate;
+  DateTime _selectedDate;
 
   @override
   void initState()
@@ -23,34 +28,68 @@ class _ProductScreenState extends State<ProductScreen>
     super.initState();
     _adultController = new TextEditingController(text: adultAmount.toString());
     _kidController = new TextEditingController(text: kidAmount.toString());
+    _currentDate = DateTime.now();
+    _selectedDate = DateTime.now();
+    String initDate = DateFormat('dd/MM/yyyy').format(DateTime.now()).toString();
+    _dateController = new TextEditingController(text: initDate);
+    _valueController = new TextEditingController(text: "0.00");
   }
 
-  Widget _buildAmountPicker(field, numberController, amount)
+  void _showEventDialog()
   {
+    showDialog
+    (
+      context: context,
+      builder: (context)
+      {
+        return AlertDialog
+        (
+          title: Text("Evento"),
+          content: Text("Que tal fechar um evento?\nA partir de 20 pessoas nós"
+            " temos pacotes especiais para nossos clientes"),
+          actions: <Widget>
+          [
+            FlatButton
+            (
+              child: Text("Ir para Eventos"),
+              onPressed: ()
+              {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      }
+    );
+  }
+
+  Widget _buildAmountPicker(field, numberController, isAdult)
+  {
+    int amount = isAdult ? adultAmount : kidAmount;
     return Padding
-      (
+    (
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
       child: Container
-        (
+      (
         decoration: BoxDecoration
-          (
+        (
           border: Border.all(color: Colors.blue, width: 2),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row
-          (
+        (
           children: <Widget>
           [
             Padding(padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Text(field, style: TextStyle(fontSize: 16))),
             Expanded(child: Container()),
             Row
-              (
+            (
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>
               [
                 IconButton
-                  (
+                (
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   iconSize: 40,
                   icon: Icon(Icons.arrow_left, color: Colors.blue,),
@@ -61,32 +100,32 @@ class _ProductScreenState extends State<ProductScreen>
                       if(amount > 0)
                       {
                         amount--;
+                        isAdult ? adultAmount-- : kidAmount--;
                         numberController.text = amount.toString();
-                        print(amount);
                       }
                     });
                   },
                 ),
 
                 Container
-                  (
+                (
                   width: 60,
                   child: TextField
-                    (
+                  (
                     readOnly: true,
                     cursorColor: Color(0x00ffffff),
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.numberWithOptions(),
                     controller: numberController,
                     decoration: InputDecoration
-                      (
-                        border: InputBorder.none
+                    (
+                      border: InputBorder.none
                     ),
                   ),
                 ),
 
                 IconButton
-                  (
+                (
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   iconSize: 40,
                   icon: Icon(Icons.arrow_right, color: Colors.blue,),
@@ -94,11 +133,15 @@ class _ProductScreenState extends State<ProductScreen>
                   {
                     setState(()
                     {
-                      if(amount < 20)
+                      if(itemAmount < 20)
                       {
                         amount++;
+                        isAdult ? adultAmount++ : kidAmount++;
                         numberController.text = amount.toString();
-                        print(amount);
+                      }
+                      else
+                      {
+                        _showEventDialog();
                       }
                     });
                   },
@@ -111,8 +154,97 @@ class _ProductScreenState extends State<ProductScreen>
     );
   }
 
+  Widget _buildDatePicker()
+  {
+    String initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
+    return Padding
+    (
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+      child: Container
+      (
+        decoration: BoxDecoration
+        (
+          border: Border.all(color: Colors.blue, width: 2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row
+        (
+          children: <Widget>
+          [
+            Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text("Data", style: TextStyle(fontSize: 16))),
+            Expanded(child: Container()),
+            Row
+              (
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>
+              [
+                Container
+                (
+                  width: 90,
+                  child: TextField
+                  (
+                    readOnly: true,
+                    cursorColor: Color(0x00ffffff),
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.numberWithOptions(),
+                    controller: _dateController,
+                    decoration: InputDecoration
+                    (
+                        border: InputBorder.none
+                    ),
+                  ),
+                ),
+
+                IconButton
+                (
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  iconSize: 20,
+                  icon: Icon(Icons.calendar_today, color: Colors.blue,),
+                  onPressed: () async
+                  {
+                    DateTime selectedDate = await showDatePicker
+                    (
+                      context: context,
+                      initialDate: _selectedDate,
+                      firstDate: _currentDate.subtract(Duration(days: 1)),
+                      lastDate: DateTime(2020, 12, 31),
+                      builder: (context, child)
+                      {
+                        return Theme
+                        (
+                          data: ThemeData.light(),
+                          child: child,
+                        );
+                      }
+                    );
+
+                    if(selectedDate != null)
+                    {
+                      setState(()
+                      {
+                        _selectedDate = selectedDate;
+                        initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
+                        _dateController.text = initDate;
+                      });
+                    }
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody()
   {
+    setState(() {
+      itemAmount = adultAmount + kidAmount;
+      print(itemAmount);
+    });
+
     return SingleChildScrollView
     (
       child: Column
@@ -134,35 +266,85 @@ class _ProductScreenState extends State<ProductScreen>
             centerTitle: true,
           ),
 
-          CalendarCarousel<Event>
+          Image.asset('my_assets/foto_pulseirinha.jpg'),
+          _buildDatePicker(),
+          _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+          _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+
+          Padding
           (
-            onDayPressed: (date, events)
-            {
-              this.setState(()
-              {
-                if(date.weekday != 2) _currentDate = date;
-              });
-            },
+            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+            child: Row
+            (
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>
+              [
+                Container
+                (
+                  decoration: BoxDecoration
+                  (
+                    border: Border.all(color: Colors.redAccent, width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row
+                  (
+                    children: <Widget>
+                    [
+                      Container
+                      (
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text("R\$", style: TextStyle(fontSize: 16),),
+                      ),
+                      Container
+                      (
+                        padding: EdgeInsets.only(right: 10),
+                        width: 90,
+                        child: TextField
+                          (
+                          readOnly: true,
+                          cursorColor: Color(0x00ffffff),
+                          textAlign: TextAlign.end,
+                          keyboardType: TextInputType.numberWithOptions(),
+                          controller: _valueController,
+                          decoration: InputDecoration
+                            (
+                              border: InputBorder.none
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
 
-            weekFormat: false,
-            weekendTextStyle: TextStyle(color: Colors.red),
-            thisMonthDayBorderColor: Colors.grey,
-            height: MediaQuery.of(context).size.height/1.7,
-            selectedDateTime: _currentDate,
-            daysHaveCircularBorder: false,
-            customDayBuilder: (bool isSelectable, int index, bool isSelectedDay,
-                bool isToday, bool isPrevMonthDay, TextStyle textStyle,
-                bool isNextMonthDay, bool isThisMonthDay, DateTime day,)
-            {
-              if(day.isBefore(_currentDate)){isSelectable = false;}
-              if(day.weekday == 2){return Container();}
-              else{return null;}
-            },
-          ),
-
-          _buildAmountPicker("Adultos", _adultController, adultAmount),
-          _buildAmountPicker("Crianças", _kidController, kidAmount),
-
+                Expanded
+                (
+                  child: Container
+                  (
+                    decoration: BoxDecoration
+                      (
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.redAccent
+                    ),
+                    margin: EdgeInsets.only(left: 5),
+                    child :InkWell
+                    (
+                      child: TextField
+                      (
+                        readOnly: true,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration
+                        (
+                          hintText: "Finalizar Compra",
+                          hintStyle: TextStyle(color: Colors.white, fontSize: 16),
+                          border: InputBorder.none
+                        ),
+                      ),
+                    ),
+                  )
+                )
+              ],
+            )
+          )
         ],
       ),
     );

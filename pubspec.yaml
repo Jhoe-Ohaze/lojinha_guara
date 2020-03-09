@@ -31,6 +31,7 @@ dependencies:
   firebase_auth: ^0.11.1+12
   url_launcher: ^5.1.1
   flutter_calendar_carousel: ^1.4.11
+  true_time: ^0.1.0
 
 dev_dependencies:
   flutter_test:

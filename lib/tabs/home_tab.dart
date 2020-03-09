@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lojinha_guara/screens/product_screen.dart';
-import 'package:transparent_image/transparent_image.dart';
 
-class ProductTab extends StatelessWidget
+class HomeTab extends StatelessWidget
 {
   @override
   Widget build(BuildContext context)
@@ -21,11 +18,10 @@ class ProductTab extends StatelessWidget
       children: <Widget>
       [
         AppBar
-          (
-          backgroundColor: Color(0xFFEE3522),
+        (
           title: Text
-            (
-            "Bilheteria",
+          (
+            "Início",
             textAlign: TextAlign.center,
             style: TextStyle(color: Color(0xFFFFFFFF)),
           ),
