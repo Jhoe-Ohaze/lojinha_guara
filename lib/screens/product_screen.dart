@@ -52,33 +52,56 @@ class _ProductScreenState extends State<ProductScreen>
         switch(option)
         {
           case 0:
-            return AlertDialog
+            return Container
             (
-              title: Text("Evento"),
-              content: Text("Que tal fechar um evento?\nA partir de 20 pessoas nós"
-                  " temos pacotes especiais para nossos clientes"),
-              actions: <Widget>
-              [
-                FlatButton
-                (
-                  child: Text("Ir para Eventos"),
-                  onPressed: ()
-                  {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
+              margin: EdgeInsets.symmetric(horizontal: 30, vertical: 100),
+              padding: EdgeInsets.all(10),
+              color: Colors.white,
+              child: Stack
+              (
+                children: <Widget>
+                [
+                  Column
+                  (
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>
+                    [
+                      Expanded(child: Image.asset('my_assets/evento.jpeg', fit: BoxFit.fill)),
+                      FlatButton
+                      (
+                        color: Colors.redAccent,
+                        padding: EdgeInsets.all(5),
+                        child: Text("Ir para eventos", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                        onPressed: (){Navigator.of(context).pop();},
+                      )
+                    ],
+                  ),
+                  Row
+                    (
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>
+                    [
+                      GestureDetector
+                      (
+                        child: Container(padding: EdgeInsets.all(5), child: Icon(Icons.close, size: 30, color: Color(0x88000000)),),
+                        onTap: (){Navigator.of(context).pop();},
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ); break;
 
           case 1: return AlertDialog
           (
-            title: Text("Aviso"),
-            content: Text("O Park estará fechado na data selecionada"),
+            title: Text("Aviso", textAlign: TextAlign.center,),
+            content: Text("O Park estará fechado na data selecionada", textAlign: TextAlign.justify,),
             actions: <Widget>
             [
               FlatButton
               (
-                child: Text("Ir para Eventos"),
+                child: Text("ok"),
                 onPressed: ()
                 {
                   Navigator.of(context).pop();
@@ -87,7 +110,7 @@ class _ProductScreenState extends State<ProductScreen>
             ],
           ); break;
 
-          default: return Container();
+          default: return null;
         }
       }
     );
@@ -264,7 +287,6 @@ class _ProductScreenState extends State<ProductScreen>
                         {
                           _showDialog(1);
                         }
-
                       });
                     }
                   },
@@ -381,10 +403,21 @@ class _ProductScreenState extends State<ProductScreen>
           ),
 
           Image.asset('my_assets/foto_pulseirinha.jpg'),
-          _buildDatePicker(),
-          _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
-          _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-          _buildPriceAndButton(),
+          Container
+          (
+            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+            child: Column
+            (
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>
+              [
+                _buildDatePicker(),
+                _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+                _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+                _buildPriceAndButton(),
+              ],
+            ),
+          )
         ],
       ),
     );

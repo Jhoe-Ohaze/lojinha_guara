@@ -48,17 +48,7 @@ class CustomDrawer extends StatelessWidget
                 (
                   children: <Widget>
                   [
-                    Positioned
-                    (
-                      top: 8.0,
-                      left: 0.0,
-                      child: Text
-                      (
-                        "Guara\nAcqua Park",
-                        style: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-
+                    Image.asset('my_assets/00.png', fit: BoxFit.fitWidth,),
                     Positioned
                     (
                       left: 0.0,
