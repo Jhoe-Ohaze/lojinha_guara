@@ -22,12 +22,19 @@ class _ProductScreenState extends State<ProductScreen>
   DateTime _currentDate;
   DateTime _selectedDate;
 
+  double adultPrice = 0.00;
+  double kidPrice = 0.00;
+  double totalPrice = 0.00;
+
+  int weekday;
+
   @override
   void initState()
   {
     super.initState();
     _adultController = new TextEditingController(text: adultAmount.toString());
     _kidController = new TextEditingController(text: kidAmount.toString());
+
     _currentDate = DateTime.now();
     _selectedDate = DateTime.now();
     String initDate = DateFormat('dd/MM/yyyy').format(DateTime.now()).toString();
@@ -35,30 +42,53 @@ class _ProductScreenState extends State<ProductScreen>
     _valueController = new TextEditingController(text: "0.00");
   }
 
-  void _showEventDialog()
+  void _showDialog(int option)
   {
     showDialog
     (
       context: context,
       builder: (context)
       {
-        return AlertDialog
-        (
-          title: Text("Evento"),
-          content: Text("Que tal fechar um evento?\nA partir de 20 pessoas nós"
-            " temos pacotes especiais para nossos clientes"),
-          actions: <Widget>
-          [
-            FlatButton
+        switch(option)
+        {
+          case 0:
+            return AlertDialog
             (
-              child: Text("Ir para Eventos"),
-              onPressed: ()
-              {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
+              title: Text("Evento"),
+              content: Text("Que tal fechar um evento?\nA partir de 20 pessoas nós"
+                  " temos pacotes especiais para nossos clientes"),
+              actions: <Widget>
+              [
+                FlatButton
+                (
+                  child: Text("Ir para Eventos"),
+                  onPressed: ()
+                  {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ); break;
+
+          case 1: return AlertDialog
+          (
+            title: Text("Aviso"),
+            content: Text("O Park estará fechado na data selecionada"),
+            actions: <Widget>
+            [
+              FlatButton
+              (
+                child: Text("Ir para Eventos"),
+                onPressed: ()
+                {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ); break;
+
+          default: return Container();
+        }
       }
     );
   }
@@ -141,7 +171,7 @@ class _ProductScreenState extends State<ProductScreen>
                       }
                       else
                       {
-                        _showEventDialog();
+                        _showDialog(0);
                       }
                     });
                   },
@@ -223,9 +253,18 @@ class _ProductScreenState extends State<ProductScreen>
                     {
                       setState(()
                       {
-                        _selectedDate = selectedDate;
-                        initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
-                        _dateController.text = initDate;
+                        weekday = selectedDate.weekday;
+                        if(weekday != 2)
+                        {
+                          _selectedDate = selectedDate;
+                          initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
+                          _dateController.text = initDate;
+                        }
+                        else
+                        {
+                          _showDialog(1);
+                        }
+
                       });
                     }
                   },
@@ -238,13 +277,86 @@ class _ProductScreenState extends State<ProductScreen>
     );
   }
 
+  Widget _buildPriceAndButton()
+  {
+    return Padding
+      (
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+        child: Row
+          (
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>
+          [
+            Container
+              (
+              decoration: BoxDecoration
+                (
+                border: Border.all(color: Colors.redAccent, width: 2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row
+                (
+                children: <Widget>
+                [
+                  Container
+                    (
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text("R\$", style: TextStyle(fontSize: 16),),
+                  ),
+                  Container
+                    (
+                    padding: EdgeInsets.only(right: 10),
+                    width: 90,
+                    child: TextField
+                      (
+                      readOnly: true,
+                      cursorColor: Color(0x00ffffff),
+                      textAlign: TextAlign.end,
+                      keyboardType: TextInputType.numberWithOptions(),
+                      controller: _valueController,
+                      decoration: InputDecoration
+                        (
+                          border: InputBorder.none
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+            Expanded
+              (
+                child: Container
+                  (
+                  decoration: BoxDecoration
+                    (
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.redAccent
+                  ),
+                  margin: EdgeInsets.only(left: 5),
+                  child :InkWell
+                    (
+                    child: TextField
+                      (
+                      readOnly: true,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration
+                        (
+                          hintText: "Finalizar Compra",
+                          hintStyle: TextStyle(color: Colors.white, fontSize: 16),
+                          border: InputBorder.none
+                      ),
+                    ),
+                  ),
+                )
+            )
+          ],
+        )
+    );
+  }
+
   Widget _buildBody()
   {
-    setState(() {
-      itemAmount = adultAmount + kidAmount;
-      print(itemAmount);
-    });
-
     return SingleChildScrollView
     (
       child: Column
@@ -252,8 +364,10 @@ class _ProductScreenState extends State<ProductScreen>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>
         [
+          _postFunctions(),
+
           AppBar
-            (
+          (
             title: Text
               (
               "Comprar Ingressos",
@@ -270,84 +384,34 @@ class _ProductScreenState extends State<ProductScreen>
           _buildDatePicker(),
           _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
           _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-
-          Padding
-          (
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-            child: Row
-            (
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>
-              [
-                Container
-                (
-                  decoration: BoxDecoration
-                  (
-                    border: Border.all(color: Colors.redAccent, width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row
-                  (
-                    children: <Widget>
-                    [
-                      Container
-                      (
-                        padding: EdgeInsets.only(left: 10),
-                        child: Text("R\$", style: TextStyle(fontSize: 16),),
-                      ),
-                      Container
-                      (
-                        padding: EdgeInsets.only(right: 10),
-                        width: 90,
-                        child: TextField
-                          (
-                          readOnly: true,
-                          cursorColor: Color(0x00ffffff),
-                          textAlign: TextAlign.end,
-                          keyboardType: TextInputType.numberWithOptions(),
-                          controller: _valueController,
-                          decoration: InputDecoration
-                            (
-                              border: InputBorder.none
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-
-                Expanded
-                (
-                  child: Container
-                  (
-                    decoration: BoxDecoration
-                      (
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.redAccent
-                    ),
-                    margin: EdgeInsets.only(left: 5),
-                    child :InkWell
-                    (
-                      child: TextField
-                      (
-                        readOnly: true,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration
-                        (
-                          hintText: "Finalizar Compra",
-                          hintStyle: TextStyle(color: Colors.white, fontSize: 16),
-                          border: InputBorder.none
-                        ),
-                      ),
-                    ),
-                  )
-                )
-              ],
-            )
-          )
+          _buildPriceAndButton(),
         ],
       ),
     );
+  }
+
+  Widget _postFunctions()
+  {
+    setState(()
+    {
+      itemAmount = adultAmount + kidAmount;
+
+      if(weekday == 6 || weekday == 7)
+      {
+        adultPrice = 58.00;
+        kidPrice = 34.00;
+      }
+      else
+      {
+        adultPrice = 44.00;
+        kidPrice = 28.00;
+      }
+
+      totalPrice = (adultPrice*adultAmount) + (kidPrice*kidAmount);
+      _valueController.text = totalPrice.toString() + "0";
+    });
+
+    return Container();
   }
 
   @override
