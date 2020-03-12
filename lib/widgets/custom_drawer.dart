@@ -10,89 +10,46 @@ class CustomDrawer extends StatelessWidget
   @override
   Widget build(BuildContext context)
   {
-    Widget _buildDrawerBack() => Container
-    (
-      decoration: BoxDecoration
-      (
-        gradient: LinearGradient
-        (
-          colors:
-          [
-            Color(0xFF9AD2FA),
-            Color(0xFFFFFFFF),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        )
-      ),
-    );
-
     return Drawer
     (
       child: Stack
       (
         children: <Widget>
         [
-          _buildDrawerBack(),
           ListView
           (
-            padding: EdgeInsets.only(left: 32.0, top: 16.0),
             children: <Widget>
             [
               Container
               (
-                margin: EdgeInsets.only(bottom: 8.0),
-                padding: EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 8.0),
-                height: 170.0,
-                child: Stack
+                height: 110,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                decoration: BoxDecoration
                 (
-                  children: <Widget>
-                  [
-                    Image.asset('my_assets/00.png', fit: BoxFit.fitWidth,),
-                    Positioned
-                    (
-                      left: 0.0,
-                      bottom: 0.0,
-                      child: Column
-                      (
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>
-                        [
-                          Text
-                          (
-                            "Olá,",
-                            style: TextStyle
-                            (
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-
-                          GestureDetector
-                          (
-                            child: Text
-                            (
-                              "Entre ou cadastre-se >",
-                              style: TextStyle
-                              (
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  gradient: LinearGradient
+                  (
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors:
+                    [
+                      Color(0xFF0022FF),
+                      Color(0xAA0055FF),
+                      Color(0x780088CC),
+                      Color(0x4400FFFF),
+                      Color(0x00FFFFFF)
+                    ]
+                  ),
                 ),
+                child: Image.asset('my_assets/logo_drawer.png', alignment: Alignment.bottomCenter),
               ),
-
-              Divider(),
+              Divider(color: Colors.grey[300], thickness: 2, height: 2,),
+              Padding(padding: EdgeInsets.only(top: 5),),
               DrawerTile(Icons.home, "Início", pageController, 0),
-              DrawerTile(Icons.list, "Ofertas", pageController, 1),
-              DrawerTile(Icons.location_on, "Encontre-nos", pageController, 2),
-              DrawerTile(Icons.playlist_add_check, "Meus Pedidos", pageController, 3),
+              Divider(color: Colors.grey[300], thickness: 2),
+              DrawerTile(Icons.shopping_cart, "Bilheteria", pageController, 1),
+              DrawerTile(Icons.date_range, "Excursões", pageController, 2),
+              DrawerTile(Icons.location_on, "Encontre-nos", pageController, 3),
+              DrawerTile(Icons.calendar_today, "Calendario", pageController, 4),
             ],
           )
         ],

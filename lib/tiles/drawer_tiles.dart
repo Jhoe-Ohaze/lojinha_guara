@@ -20,12 +20,16 @@ class DrawerTile extends StatelessWidget
         onTap: ()
         {
           Navigator.of(context).pop();
-          pageController.jumpToPage(page);
+          pageController.animateToPage(page, curve: Curves.easeInOut, duration: Duration(milliseconds: 300));
         },
         child: Container
         (
-          color: Colors.transparent,
-          height: 60.0,
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration
+          (
+            color: pageController.page.round() == page ? Theme.of(context).accentColor:Colors.transparent,
+          ),
+          height: 40.0,
           child: Row
           (
             children: <Widget>
@@ -33,10 +37,10 @@ class DrawerTile extends StatelessWidget
               Icon
               (
                 icon,
-                size: 32.0,
+                size: 25.0,
                 color: pageController.page.round() == page ? Theme.of(context).primaryColor : Colors.grey[700],
               ),
-              SizedBox(width: 32.0),
+              SizedBox(width: 15.0),
               Text
               (
                 text,

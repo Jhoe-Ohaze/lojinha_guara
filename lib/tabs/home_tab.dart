@@ -17,21 +17,10 @@ class HomeTab extends StatelessWidget
     (
       children: <Widget>
       [
-        AppBar
-        (
-          title: Text
-          (
-            "Início",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFFFFFFFF)),
-          ),
-          centerTitle: true,
-        ),
-
         Expanded
         (
           child: Stack
-            (
+          (
             children: <Widget>
             [
               _buildProducts(), //Products Slivers

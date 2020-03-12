@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ProductScreen extends StatefulWidget
+class TicketTab extends StatefulWidget
 {
   @override
-  _ProductScreenState createState() => _ProductScreenState();
+  _TicketTabState createState() => _TicketTabState();
 }
 
-class _ProductScreenState extends State<ProductScreen>
+class _TicketTabState extends State<TicketTab>
 {
   TextEditingController _adultController;
   TextEditingController _kidController;
@@ -26,7 +26,7 @@ class _ProductScreenState extends State<ProductScreen>
   double kidPrice = 0.00;
   double totalPrice = 0.00;
 
-  int weekday;
+  int weekday = 0;
 
   @override
   void initState()
@@ -35,8 +35,8 @@ class _ProductScreenState extends State<ProductScreen>
     _adultController = new TextEditingController(text: adultAmount.toString());
     _kidController = new TextEditingController(text: kidAmount.toString());
 
-    _currentDate = DateTime.now();
-    _selectedDate = DateTime.now();
+    _currentDate = DateTime.now().weekday == 2 ? DateTime.now().add(Duration(days: 1)) : DateTime.now();
+    _selectedDate = _currentDate;
     String initDate = DateFormat('dd/MM/yyyy').format(DateTime.now()).toString();
     _dateController = new TextEditingController(text: initDate);
     _valueController = new TextEditingController(text: "0.00");
@@ -276,6 +276,7 @@ class _ProductScreenState extends State<ProductScreen>
                     {
                       setState(()
                       {
+                        int auxWeekday = weekday;
                         weekday = selectedDate.weekday;
                         if(weekday != 2)
                         {
@@ -285,6 +286,7 @@ class _ProductScreenState extends State<ProductScreen>
                         }
                         else
                         {
+                          weekday = auxWeekday;
                           _showDialog(1);
                         }
                       });
@@ -387,22 +389,22 @@ class _ProductScreenState extends State<ProductScreen>
         children: <Widget>
         [
           _postFunctions(),
-
-          AppBar
+          Container
           (
-            title: Text
-              (
-              "Comprar Ingressos",
-              style: TextStyle
-                (
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
-              ),
+            margin: EdgeInsets.all(10),
+            decoration: BoxDecoration
+            (
+              border: Border.all(width: 2, color: Colors.grey[700]),
+              borderRadius: BorderRadius.circular(8)
             ),
-            centerTitle: true,
+            child: ClipRRect
+            (
+
+              borderRadius: BorderRadius.circular(5),
+              child: Image.asset('my_assets/foto_pulseirinha.jpg'),
+            ),
           ),
 
-          Image.asset('my_assets/foto_pulseirinha.jpg'),
           Container
           (
             padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
