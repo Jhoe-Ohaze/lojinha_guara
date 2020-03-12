@@ -14,16 +14,20 @@ class HomeScreen extends StatelessWidget
   {
     return Scaffold
     (
-      appBar: AppBar(title: TextField
+      appBar: AppBar
       (
-        readOnly: true,
-        textAlign: TextAlign.center,
-        controller: _titleController,
-        decoration: InputDecoration
+        title: TextField
         (
+          readOnly: true,
+          textAlign: TextAlign.center,
+          controller: _titleController,
+          decoration: InputDecoration
+          (
             border: InputBorder.none
+          ),
         ),
-      )),
+        centerTitle: true,
+      ),
       drawer: CustomDrawer(_pageController, _titleController),
       body: PageView
       (

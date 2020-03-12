@@ -47,7 +47,7 @@ class CustomDrawer extends StatelessWidget
               Divider(color: Colors.grey[300], thickness: 2, height: 2),
               Padding(padding: EdgeInsets.only(top: 5)),
 
-              DrawerTile(Icons.home, "Início", pageController, 0),
+              DrawerTile(Icons.home, "Início", pageController, 0, titleController),
               Divider(color: Colors.grey[300], thickness: 2),
 
               DrawerTile(Icons.shopping_cart, "Bilheteria", pageController, 1, titleController),

@@ -21,6 +21,7 @@ class DrawerTile extends StatelessWidget
         onTap: ()
         {
           Navigator.of(context).pop();
+          titleController.text = text;
           pageController.animateToPage(page, curve: Curves.easeInOut, duration: Duration(milliseconds: 300));
         },
         child: Container
