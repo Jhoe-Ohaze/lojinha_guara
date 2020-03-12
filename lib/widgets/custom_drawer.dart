@@ -4,8 +4,9 @@ import 'package:lojinha_guara/tiles/drawer_tiles.dart';
 class CustomDrawer extends StatelessWidget
 {
   final PageController pageController;
+  final TextEditingController titleController;
 
-  CustomDrawer(this.pageController);
+  CustomDrawer(this.pageController, this.titleController);
 
   @override
   Widget build(BuildContext context)
@@ -42,14 +43,17 @@ class CustomDrawer extends StatelessWidget
                 ),
                 child: Image.asset('my_assets/logo_drawer.png', alignment: Alignment.bottomCenter),
               ),
-              Divider(color: Colors.grey[300], thickness: 2, height: 2,),
-              Padding(padding: EdgeInsets.only(top: 5),),
+
+              Divider(color: Colors.grey[300], thickness: 2, height: 2),
+              Padding(padding: EdgeInsets.only(top: 5)),
+
               DrawerTile(Icons.home, "Início", pageController, 0),
               Divider(color: Colors.grey[300], thickness: 2),
-              DrawerTile(Icons.shopping_cart, "Bilheteria", pageController, 1),
-              DrawerTile(Icons.date_range, "Excursões", pageController, 2),
-              DrawerTile(Icons.location_on, "Encontre-nos", pageController, 3),
-              DrawerTile(Icons.calendar_today, "Calendario", pageController, 4),
+
+              DrawerTile(Icons.shopping_cart, "Bilheteria", pageController, 1, titleController),
+              DrawerTile(Icons.date_range, "Excursões", pageController, 2, titleController),
+              DrawerTile(Icons.location_on, "Encontre-nos", pageController, 3, titleController),
+              DrawerTile(Icons.calendar_today, "Calendario", pageController, 4, titleController),
             ],
           )
         ],

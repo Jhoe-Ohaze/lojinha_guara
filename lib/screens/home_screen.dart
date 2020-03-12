@@ -7,14 +7,24 @@ import 'package:lojinha_guara/widgets/custom_drawer.dart';
 class HomeScreen extends StatelessWidget
 {
   final _pageController = PageController();
+  final _titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context)
   {
     return Scaffold
     (
-      appBar: AppBar(),
-      drawer: CustomDrawer(_pageController),
+      appBar: AppBar(title: TextField
+      (
+        readOnly: true,
+        textAlign: TextAlign.center,
+        controller: _titleController,
+        decoration: InputDecoration
+        (
+            border: InputBorder.none
+        ),
+      )),
+      drawer: CustomDrawer(_pageController, _titleController),
       body: PageView
       (
         physics: NeverScrollableScrollPhysics(),
