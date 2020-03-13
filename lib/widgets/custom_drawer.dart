@@ -44,11 +44,11 @@ class CustomDrawer extends StatelessWidget
                 child: Image.asset('my_assets/logo_drawer.png', alignment: Alignment.bottomCenter),
               ),
 
-              Divider(color: Colors.grey[300], thickness: 2, height: 2),
+              Divider(color: Colors.grey[300], thickness: 1, height: 2),
               Padding(padding: EdgeInsets.only(top: 5)),
 
               DrawerTile(Icons.home, "Início", pageController, 0, titleController),
-              Divider(color: Colors.grey[300], thickness: 2),
+              Divider(color: Colors.grey[300], thickness: 1),
 
               DrawerTile(Icons.shopping_cart, "Bilheteria", pageController, 1, titleController),
               DrawerTile(Icons.date_range, "Excursões", pageController, 2, titleController),

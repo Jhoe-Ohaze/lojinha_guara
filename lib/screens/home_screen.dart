@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lojinha_guara/screens/excursion_screen.dart';
 import 'package:lojinha_guara/tabs/excursion_tab.dart';
 import 'package:lojinha_guara/tabs/ticket_tab.dart';
 import 'package:lojinha_guara/tabs/home_tab.dart';
@@ -19,7 +20,7 @@ class HomeScreen extends StatelessWidget
       (
         title: Container
         (
-          width: 100,
+          width: 200,
           alignment: Alignment.center,
           child: TextField
             (
@@ -47,8 +48,8 @@ class HomeScreen extends StatelessWidget
         children: <Widget>
         [
           HomeTab(),
-          TicketTab(),
-          ExcursionTab(),
+          TicketTab(_pageController, _titleController),
+          ExcursionScreen(),
         ],
       ),
     );

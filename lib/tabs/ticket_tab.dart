@@ -1,15 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lojinha_guara/screens/excursion_screen.dart';
+import 'package:lojinha_guara/screens/home_screen.dart';
+import 'package:lojinha_guara/tabs/excursion_tab.dart';
 
 class TicketTab extends StatefulWidget
 {
   @override
-  _TicketTabState createState() => _TicketTabState();
+  final PageController pageController;
+  final TextEditingController titleController;
+
+  TicketTab(this.pageController, this.titleController);
+
+  _TicketTabState createState() => _TicketTabState(pageController, titleController);
 }
 
 class _TicketTabState extends State<TicketTab>
 {
+  final PageController pageController;
+  final TextEditingController titleController;
+
+  _TicketTabState(this.pageController, this.titleController);
+
   TextEditingController _adultController;
   TextEditingController _kidController;
   TextEditingController _dateController;
@@ -73,7 +86,12 @@ class _TicketTabState extends State<TicketTab>
                         color: Colors.redAccent,
                         padding: EdgeInsets.all(5),
                         child: Text("Ir para eventos", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
-                        onPressed: (){Navigator.of(context).pop();},
+                        onPressed: ()
+                        {
+                          Navigator.of(context).pop();
+                          titleController.text = "Excursões";
+                          pageController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+                        },
                       )
                     ],
                   ),
@@ -85,7 +103,10 @@ class _TicketTabState extends State<TicketTab>
                       GestureDetector
                       (
                         child: Container(padding: EdgeInsets.all(5), child: Icon(Icons.close, size: 30, color: Color(0x88000000)),),
-                        onTap: (){Navigator.of(context).pop();},
+                        onTap: ()
+                        {
+                          Navigator.of(context).pop();
+                        },
                       )
                     ],
                   ),

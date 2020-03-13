@@ -10,6 +10,11 @@ class DrawerTile extends StatelessWidget
 
   DrawerTile(this.icon, this.text, this.pageController, this.page, this.titleController);
 
+  final yellow = Color(0x66FFDD33);
+  final red = Color(0xAAFF0000);
+  final blue = Color(0xFF0055FF);
+  final cyan = Color(0x6633CCFF);
+
   @override
   Widget build(BuildContext context)
   {
@@ -26,10 +31,13 @@ class DrawerTile extends StatelessWidget
         },
         child: Container
         (
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          margin: EdgeInsets.symmetric(horizontal: 10),
+          
           decoration: BoxDecoration
           (
-            color: pageController.page.round() == page ? Theme.of(context).accentColor:Colors.transparent,
+            color: pageController.page.round() == page ? Color(0x6633CCFF):Colors.transparent,
+            borderRadius: BorderRadius.circular(20)
           ),
           height: 40.0,
           child: Row
@@ -40,7 +48,7 @@ class DrawerTile extends StatelessWidget
               (
                 icon,
                 size: 25.0,
-                color: pageController.page.round() == page ? Theme.of(context).primaryColor : Colors.grey[700],
+                color: pageController.page.round() == page ? Color(0xFF0055FF) : Colors.grey[700],
               ),
               SizedBox(width: 15.0),
               Text
@@ -49,7 +57,7 @@ class DrawerTile extends StatelessWidget
                 style: TextStyle
                 (
                   fontSize: 16.0,
-                  color: pageController.page.round() == page ? Theme.of(context).primaryColor : Colors.grey[700]
+                  color: pageController.page.round() == page ? Color(0xFF0055FF) : Colors.grey[700]
                 ),
               )
             ],
