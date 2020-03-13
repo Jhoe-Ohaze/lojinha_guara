@@ -12,18 +12,29 @@ class HomeScreen extends StatelessWidget
   @override
   Widget build(BuildContext context)
   {
+    _titleController.text = "Início";
     return Scaffold
     (
       appBar: AppBar
       (
-        title: TextField
+        title: Container
         (
-          readOnly: true,
-          textAlign: TextAlign.center,
-          controller: _titleController,
-          decoration: InputDecoration
-          (
-            border: InputBorder.none
+          width: 100,
+          alignment: Alignment.center,
+          child: TextField
+            (
+            readOnly: true,
+            style: TextStyle
+              (
+              fontSize: 20,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+            controller: _titleController,
+            decoration: InputDecoration
+            (
+              border: InputBorder.none
+            ),
           ),
         ),
         centerTitle: true,
