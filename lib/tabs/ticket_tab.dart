@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lojinha_guara/screens/excursion_screen.dart';
-import 'package:lojinha_guara/screens/home_screen.dart';
-import 'package:lojinha_guara/tabs/excursion_tab.dart';
 
 class TicketTab extends StatefulWidget
 {
