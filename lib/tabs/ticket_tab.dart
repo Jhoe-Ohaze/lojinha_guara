@@ -62,38 +62,36 @@ class _TicketTabState extends State<TicketTab>
         switch(option)
         {
           case 0:
+            double _imageWidth = MediaQuery.of(context).size.width - 80;
+            double _imageHeight = (5/3) * _imageWidth;
+            Image _imageExcursion = Image.asset
+            (
+              'my_assets/evento.jpeg',
+              width: _imageWidth,
+              height: _imageHeight,
+            );
+
             return Container
             (
-              margin: EdgeInsets.symmetric(horizontal: 30, vertical: 100),
+              margin: EdgeInsets.all(30),
               padding: EdgeInsets.all(10),
               color: Colors.white,
               child: Stack
               (
                 children: <Widget>
                 [
-                  Column
+                  GestureDetector
                   (
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>
-                    [
-                      Expanded(child: Image.asset('my_assets/evento.jpeg', fit: BoxFit.fill)),
-                      FlatButton
-                      (
-                        color: Colors.redAccent,
-                        padding: EdgeInsets.all(5),
-                        child: Text("Ir para eventos", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
-                        onPressed: ()
-                        {
-                          Navigator.of(context).pop();
-                          titleController.text = "Excursões";
-                          pageController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
-                        },
-                      )
-                    ],
+                    onTap: ()
+                    {
+                      Navigator.of(context).pop();
+                      titleController.text = "Excursões";
+                      pageController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+                    },
+                    child: _imageExcursion,
                   ),
                   Row
-                    (
+                  (
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>
                     [

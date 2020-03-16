@@ -50,10 +50,11 @@ class CustomDrawer extends StatelessWidget
               DrawerTile(Icons.home, "Início", pageController, 0, titleController),
               Divider(color: Colors.grey[300], thickness: 1),
 
-              DrawerTile(Icons.shopping_cart, "Bilheteria", pageController, 1, titleController),
-              DrawerTile(Icons.date_range, "Excursões", pageController, 2, titleController),
-              DrawerTile(Icons.location_on, "Encontre-nos", pageController, 3, titleController),
-              DrawerTile(Icons.calendar_today, "Calendario", pageController, 4, titleController),
+              DrawerTile(Icons.local_offer, "Bilheteria", pageController, 1, titleController),
+              DrawerTile(Icons.directions_bus, "Excursões", pageController, 2, titleController),
+              DrawerTile(Icons.person, "Sociedade", pageController, 3, titleController),
+              DrawerTile(Icons.location_on, "Encontre-nos", pageController, 4, titleController),
+              DrawerTile(Icons.calendar_today, "Calendario", pageController, 5, titleController),
             ],
           )
         ],
