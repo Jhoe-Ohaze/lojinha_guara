@@ -23,12 +23,12 @@ class _ExcursionScreenState extends State<ExcursionScreen>
   {
     super.initState();
 
-    _currentDate = DateTime.now().weekday == 2 ? DateTime.now().add(Duration(days: 7)) : DateTime.now().add(Duration(days: 6));
+    _currentDate = DateTime.now().weekday == 2 ? DateTime.now().add(Duration(days: 8)) : DateTime.now().add(Duration(days: 7));
     _selectedDate = _currentDate;
 
     weekday = _currentDate.weekday;
 
-    String initDate = DateFormat('dd/MM/yyyy').format(DateTime.now()).toString();
+    String initDate = DateFormat('dd/MM/yyyy').format(_currentDate).toString();
 
     _dateController = new TextEditingController(text: initDate);
   }
@@ -63,7 +63,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
           <TextInputFormatter>
           [
             LengthLimitingTextInputFormatter(limit),
-            WhitelistingTextInputFormatter(RegExp("[aA-zZ ]")),
+            WhitelistingTextInputFormatter(RegExp("[A-Z ]")),
           ],
         ),
       );
@@ -218,33 +218,105 @@ class _ExcursionScreenState extends State<ExcursionScreen>
       );
     }
 
-    return Container
+    Widget _buildSendButton()
+    {
+      return SizedBox
+        (
+        height: MediaQuery.of(context).size.height*0.15,
+        width: _screenWidth,
+        child: Stack
+          (
+          alignment: Alignment.center,
+          children: <Widget>
+          [
+            Container
+              (
+              height: double.infinity,
+              child: Image.asset
+                (
+                'my_assets/images/send_button.png',
+                fit: BoxFit.fill,
+                color: Color.fromRGBO(255, 255, 255, 0.8),
+                colorBlendMode: BlendMode.modulate,
+              ),
+            ),
+            Container
+              (
+              decoration: BoxDecoration
+                (
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(180), topRight: Radius.circular(180))
+              ),
+              alignment: Alignment.center,
+              width: _screenWidth*0.5,
+              height: double.infinity,
+              child: MaterialButton
+                (
+                shape: RoundedRectangleBorder
+                  (
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
+                ),
+                onPressed: ()
+                {
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("Tap"),));
+                },
+                child: Container
+                  (
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Text
+                    (
+                    "Solicitar",
+                    style: TextStyle
+                      (
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column
     (
-      padding: EdgeInsets.all(5),
-      child: Column
-      (
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>
-        [
-          _createField("Nome", true, _screenWidth, 100, false, false),
-          Row
+      children: <Widget>
+      [
+        Container
           (
+          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+          child: Column
+            (
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>
             [
-              _createField("DDD", true, 70.0, 2, true, true),
-              _createField("Telefone", true, _screenWidth-80, 10, true, false),
+              _createField("Nome", true, _screenWidth, 100, false, false),
+              Row
+                (
+                children: <Widget>
+                [
+                  _createField("DDD", true, 70.0, 2, true, true),
+                  _createField("Telefone", true, _screenWidth-80, 9, true, false),
+                ],
+              ),
+              Row
+                (
+                children: <Widget>
+                [
+                  _buildDatePicker(),
+                  _buildTypePicker()
+                ],
+              ),
             ],
           ),
-          Row
-          (
-            children: <Widget>
-            [
-              _buildDatePicker(),
-              _buildTypePicker()
-            ],
-          ),
-        ],
-      ),
+        ),
+        Expanded(child: Container()),
+        _buildSendButton(),
+      ],
     );
   }
 }

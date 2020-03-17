@@ -417,7 +417,7 @@ class _TicketTabState extends State<TicketTab>
             (
 
               borderRadius: BorderRadius.circular(5),
-              child: Image.asset('my_assets/foto_pulseirinha.jpg'),
+              child: Image.asset('my_assets/images/foto_pulseirinha.jpg'),
             ),
           ),
 

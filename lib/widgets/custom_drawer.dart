@@ -41,7 +41,7 @@ class CustomDrawer extends StatelessWidget
                     ]
                   ),
                 ),
-                child: Image.asset('my_assets/logo_drawer.png', alignment: Alignment.bottomCenter),
+                child: Image.asset('my_assets/images/logo_drawer.png', alignment: Alignment.bottomCenter),
               ),
 
               Divider(color: Colors.grey[300], thickness: 1, height: 2),
