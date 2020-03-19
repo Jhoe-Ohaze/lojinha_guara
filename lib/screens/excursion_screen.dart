@@ -287,16 +287,16 @@ class _ExcursionScreenState extends State<ExcursionScreen>
       children: <Widget>
       [
         Container
-          (
+        (
           margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
           child: Column
-            (
+          (
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>
             [
               _createField("Nome", true, _screenWidth, 100, false, false),
               Row
-                (
+              (
                 children: <Widget>
                 [
                   _createField("DDD", true, 70.0, 2, true, true),
@@ -304,7 +304,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
                 ],
               ),
               Row
-                (
+              (
                 children: <Widget>
                 [
                   _buildDatePicker(),

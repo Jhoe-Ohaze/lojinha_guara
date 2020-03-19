@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lojinha_guara/screens/excursion_screen.dart';
+import 'package:lojinha_guara/screens/findus_screen.dart';
 import 'package:lojinha_guara/screens/society_screen.dart';
 import 'package:lojinha_guara/tabs/excursion_tab.dart';
 import 'package:lojinha_guara/tabs/ticket_tab.dart';
@@ -79,9 +80,9 @@ class HomeScreen extends StatelessWidget
     Widget _buildBody()
     {
       return Expanded
-        (
+      (
         child: PageView
-          (
+        (
           physics: NeverScrollableScrollPhysics(),
           controller: _pageController,
           children: <Widget>
@@ -90,7 +91,7 @@ class HomeScreen extends StatelessWidget
             TicketTab(_pageController, _titleController),
             ExcursionScreen(),
             SocietyScreen(),
-            Container(color: Colors.yellow),
+            FindUsScreen(),
             Container(color: Colors.green)
           ],
         ),
