@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+
   @override
   Widget build(BuildContext context)
   {
@@ -88,12 +89,12 @@ class HomeScreen extends StatelessWidget
           controller: _pageController,
           children: <Widget>
           [
-            HomeTab(),
+            CalendarScreen(),
             TicketTab(_pageController, _titleController),
             ExcursionScreen(),
             SocietyScreen(),
             FindUsScreen(),
-            CalendarScreen()
+            HomeTab(),
           ],
         ),
       );

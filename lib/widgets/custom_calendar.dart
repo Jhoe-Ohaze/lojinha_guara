@@ -6,8 +6,11 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show C
 
 class CustomCalendar extends StatefulWidget
 {
+  final DateTime _maxDate;
+  CustomCalendar(this._maxDate);
+
   @override
-  _CustomCalendarState createState() => _CustomCalendarState();
+  _CustomCalendarState createState() => _CustomCalendarState(_maxDate);
 }
 
 class _CustomCalendarState extends State<CustomCalendar>
@@ -19,12 +22,15 @@ class _CustomCalendarState extends State<CustomCalendar>
   TextEditingController _dateController;
   String dropdownValue = "Aniversário";
 
+  final DateTime _maxDate;
+  _CustomCalendarState(this._maxDate);
+
   @override
   void initState()
   {
     super.initState();
 
-    _currentDate = DateTime.now().weekday == 2 ? DateTime.now().add(Duration(days: 8)) : DateTime.now().add(Duration(days: 7));
+    _currentDate = DateTime.now().weekday == 2 ? DateTime.now().add(Duration(days: 1)) : DateTime.now();
     _selectedDate = _currentDate;
 
     weekday = _currentDate.weekday;
@@ -44,20 +50,86 @@ class _CustomCalendarState extends State<CustomCalendar>
       }
     );
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.0),
-      child: CalendarCarousel<Event>(
-        onDayPressed: (DateTime date, List<Event> events) {
-          this.setState(() => _selectedDate = date);
-        },
-        weekendTextStyle: TextStyle(
-          color: Colors.red,
-        ),
-        thisMonthDayBorderColor: Colors.grey,
-//      weekDays: null, /// for pass null when you do not want to render weekDays
-//      headerText: Container( /// Example for rendering custom header
-//        child: Text('Custom Header'),
-//      ),
+    void _showDialog(int option)
+    {
+      showDialog
+        (
+          context: context,
+          builder: (context)
+          {
+            switch(option)
+            {
+              case 1: return AlertDialog
+              (
+                title: Text("Aviso", textAlign: TextAlign.center,),
+                content: Text("O Park estará fechado na data selecionada", textAlign: TextAlign.justify,),
+                actions: <Widget>
+                [
+                  FlatButton
+                    (
+                    child: Text("ok"),
+                    onPressed: ()
+                    {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ); break;
+
+              case 2: return AlertDialog
+                (
+                title: Text("Aviso", textAlign: TextAlign.center,),
+                content: Text("Selecione datas a partir de hoje", textAlign: TextAlign.justify,),
+                actions: <Widget>
+                [
+                  FlatButton
+                    (
+                    child: Text("ok"),
+                    onPressed: ()
+                    {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ); break;
+
+              default: return null;
+            }
+          }
+      );
+    }
+
+    return Container
+    (
+      margin: EdgeInsets.all(16.0),
+      decoration: BoxDecoration
+      (
+        border: Border.all(color: Colors.blue),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: CalendarCarousel<Event>
+      (
+        markedDatesMap: _markedDateMap,
+        height: 420.0,
+        daysHaveCircularBorder: false,
+        showOnlyCurrentMonthDate: true,
+
+        selectedDateTime: _selectedDate,
+        minSelectedDate: _currentDate.subtract(Duration(days: 1)),
+        maxSelectedDate: _maxDate,
+
+
+        weekendTextStyle: TextStyle(color: Colors.red),
+        weekdayTextStyle: TextStyle(color: Color(0xFF0088FF)),
+
+        selectedDayButtonColor: Colors.blue,
+        selectedDayTextStyle: TextStyle(color: Colors.white),
+        selectedDayBorderColor: Colors.transparent,
+
+        todayBorderColor: Colors.transparent,
+        todayButtonColor: Colors.transparent,
+        todayTextStyle: TextStyle(color: weekday == 0 || weekday == 6 ? Colors.red:Colors.black),
+
         customDayBuilder:
         (   /// you can provide your own build function to make custom day containers
           bool isSelectable,
@@ -69,22 +141,37 @@ class _CustomCalendarState extends State<CustomCalendar>
           bool isNextMonthDay,
           bool isThisMonthDay,
           DateTime day,
-        ) {
-          /// If you return null, [CalendarCarousel] will build container for current [day] with default function.
-          /// This way you can build custom containers for specific days only, leaving rest as default.
-
-          // Example: every 15th of month, we have a flight, we can place an icon in the container like that:
-          if (day.weekday == 2) {
-            return Container();
-          } else {
+        )
+        {
+          if(day.isBefore(_currentDate.subtract(Duration(days: 1))))
+          {
+            return Container
+            (
+              alignment: Alignment.center,
+              child: Text(day.day.toString(), style: TextStyle(color: Colors.orange[100]),),
+            );
+          }
+          else if (day.weekday == 2)
+          {
+            return Container
+            (
+              alignment: Alignment.center,
+              child: Icon(Icons.close, color: Colors.grey,),
+            );
+          }
+          else
+          {
             return null;
           }
         },
-        weekFormat: false,
-        markedDatesMap: _markedDateMap,
-        height: 420.0,
-        selectedDateTime: _selectedDate,
-        daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
+
+        pageScrollPhysics: BouncingScrollPhysics(),
+        onDayPressed: (DateTime date, List<Event> events)
+        {
+          if(date.isBefore(_currentDate.subtract(Duration(days: 1)))){_showDialog(2);}
+          else if(date.weekday != 2){this.setState(() => _selectedDate = date);}
+          else{_showDialog(1);}
+        },
       ),
     );
   }

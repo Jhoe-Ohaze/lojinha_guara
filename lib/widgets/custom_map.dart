@@ -80,6 +80,7 @@ class _CustomMapState extends State<CustomMap>
               _controller.complete(controller);
             },
             markers: _markers,
+            buildingsEnabled: false,
           ),
           IconButton
           (

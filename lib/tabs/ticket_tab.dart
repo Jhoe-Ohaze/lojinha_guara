@@ -4,12 +4,12 @@ import 'package:intl/intl.dart';
 
 class TicketTab extends StatefulWidget
 {
-  @override
   final PageController pageController;
   final TextEditingController titleController;
 
   TicketTab(this.pageController, this.titleController);
 
+  @override
   _TicketTabState createState() => _TicketTabState(pageController, titleController);
 }
 

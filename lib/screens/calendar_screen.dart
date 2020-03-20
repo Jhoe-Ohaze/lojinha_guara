@@ -13,8 +13,8 @@ class CalendarScreen extends StatelessWidget
       [
         SizedBox
         (
-          height: MediaQuery.of(context).size.height/2,
-          child: CustomCalendar(),
+          height: 450,
+          child: CustomCalendar(DateTime(2020,12,31)),
         ),
         Expanded(child: Container())
       ],
