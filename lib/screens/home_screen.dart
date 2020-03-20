@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lojinha_guara/screens/calendar_screen.dart';
 import 'package:lojinha_guara/screens/excursion_screen.dart';
 import 'package:lojinha_guara/screens/findus_screen.dart';
 import 'package:lojinha_guara/screens/society_screen.dart';
@@ -92,7 +93,7 @@ class HomeScreen extends StatelessWidget
             ExcursionScreen(),
             SocietyScreen(),
             FindUsScreen(),
-            Container(color: Colors.green)
+            CalendarScreen()
           ],
         ),
       );

@@ -1,38 +1,14 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lojinha_guara/widgets/custom_map.dart';
 
-class FindUsScreen extends StatefulWidget {
+class FindUsScreen extends StatefulWidget
+{
   @override
   _FindUsScreenState createState() => _FindUsScreenState();
 }
 
 class _FindUsScreenState extends State<FindUsScreen>
 {
-  Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _initialLocation = CameraPosition
-  (
-    target: LatLng(-1.3068844, -48.0280005),
-    zoom: 17,
-  );
-
-  Widget customMap()
-  {
-    return Scaffold
-    (
-      body: GoogleMap
-        (
-        mapType: MapType.hybrid,
-        initialCameraPosition: _initialLocation,
-        onMapCreated: (GoogleMapController controller)
-        {
-          _controller.complete(controller);
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context)
   {
@@ -51,7 +27,7 @@ class _FindUsScreenState extends State<FindUsScreen>
                 (
                 border: Border.all(color: Colors.grey),
               ),
-              child: customMap()
+              child: CustomMap()
           ),
         ),
         Expanded(child: Container())
