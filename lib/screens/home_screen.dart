@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lojinha_guara/screens/calendar_screen.dart';
-import 'package:lojinha_guara/screens/excursion_screen.dart';
-import 'package:lojinha_guara/screens/findus_screen.dart';
-import 'package:lojinha_guara/screens/society_screen.dart';
 import 'package:lojinha_guara/tabs/excursion_tab.dart';
+import 'package:lojinha_guara/tabs/society_tab.dart';
 import 'package:lojinha_guara/tabs/ticket_tab.dart';
 import 'package:lojinha_guara/tabs/home_tab.dart';
 import 'package:lojinha_guara/widgets/custom_drawer.dart';
@@ -89,12 +86,10 @@ class HomeScreen extends StatelessWidget
           controller: _pageController,
           children: <Widget>
           [
-            CalendarScreen(),
-            TicketTab(_pageController, _titleController),
-            ExcursionScreen(),
-            SocietyScreen(),
-            FindUsScreen(),
             HomeTab(),
+            TicketTab(_pageController, _titleController),
+            ExcursionTab(),
+            SocietyTab(),
           ],
         ),
       );

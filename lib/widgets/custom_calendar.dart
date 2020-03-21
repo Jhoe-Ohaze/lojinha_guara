@@ -111,13 +111,16 @@ class _CustomCalendarState extends State<CustomCalendar>
       (
         markedDatesMap: _markedDateMap,
         height: 420.0,
+        isScrollable: true,
         daysHaveCircularBorder: false,
         showOnlyCurrentMonthDate: true,
+
+        customGridViewPhysics: NeverScrollableScrollPhysics(),
+        pageScrollPhysics: BouncingScrollPhysics(),
 
         selectedDateTime: _selectedDate,
         minSelectedDate: _currentDate.subtract(Duration(days: 1)),
         maxSelectedDate: _maxDate,
-
 
         weekendTextStyle: TextStyle(color: Colors.red),
         weekdayTextStyle: TextStyle(color: Color(0xFF0088FF)),
@@ -165,7 +168,6 @@ class _CustomCalendarState extends State<CustomCalendar>
           }
         },
 
-        pageScrollPhysics: BouncingScrollPhysics(),
         onDayPressed: (DateTime date, List<Event> events)
         {
           if(date.isBefore(_currentDate.subtract(Duration(days: 1)))){_showDialog(2);}
