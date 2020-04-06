@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lojinha_guara/widgets/custom_bar.dart';
 import 'package:lojinha_guara/widgets/custom_calendar.dart';
-import 'package:lojinha_guara/widgets/custom_map.dart';
 
 class HomeTab extends StatelessWidget
 {
+  final id = 0;
+
   @override
   Widget build(BuildContext context)
   {
@@ -15,47 +17,33 @@ class HomeTab extends StatelessWidget
   ////* Main Widget *///////////////////////////////////////////////////////////
   Widget _tabBody(context)
   {
-    return SingleChildScrollView
+    return Column
     (
-      physics: BouncingScrollPhysics(),
-      child: Column
-      (
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>
-        [
-          //////////////////////////////////////////////////////////////////////
-          ////* Calendar *//////////////////////////////////////////////////////
-          SizedBox
+      children: <Widget>
+      [
+        CustomBar("Início"),
+        SingleChildScrollView
           (
-            height: 450,
-            child: CustomCalendar(DateTime(2020, 12, 31)),
-          ),
-          //////////////////////////////////////////////////////////////////////
-          //////////////////////////////////////////////////////////////////////
-
-          //////////////////////////////////////////////////////////////////////
-          ////* Map *///////////////////////////////////////////////////////////
-          SizedBox
-          (
-            height: MediaQuery.of(context).size.height*0.4,
-            child: Stack
+          physics: BouncingScrollPhysics(),
+          child: Column
             (
-              children: <Widget>
-              [
-                Container
-                (
-                  margin: EdgeInsets.all(15),
-                  child: CustomMap()
-                ),
-              ],
-            )
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>
+            [
+              //////////////////////////////////////////////////////////////////////
+              ////* Calendar *//////////////////////////////////////////////////////
+              SizedBox
+              (
+                height: 450,
+                child: CustomCalendar(DateTime(2020, 12, 31)),
+              ),
+              //////////////////////////////////////////////////////////////////////
+              //////////////////////////////////////////////////////////////////////
+
+            ],
           ),
-          //////////////////////////////////////////////////////////////////////
-          //////////////////////////////////////////////////////////////////////
-
-
-        ],
-      ),
+        )
+      ],
     );
   }
   //////////////////////////////////////////////////////////////////////////////

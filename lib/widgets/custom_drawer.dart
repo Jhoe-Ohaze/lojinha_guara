@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:lojinha_guara/tabs/excursion_tab.dart';
+import 'package:lojinha_guara/tabs/home_tab.dart';
+import 'package:lojinha_guara/tabs/map_tab.dart';
+import 'package:lojinha_guara/tabs/society_tab.dart';
+import 'package:lojinha_guara/tabs/ticket_tab.dart';
 import 'package:lojinha_guara/tiles/drawer_tiles.dart';
 
 class CustomDrawer extends StatelessWidget
 {
-  final PageController pageController;
-  final TextEditingController titleController;
+  final Widget _currentWidget;
+  final Function _setWidget;
+  final Function _getPage;
 
-  CustomDrawer(this.pageController, this.titleController);
+  CustomDrawer(this._currentWidget, this._setWidget, this._getPage);
 
   @override
   Widget build(BuildContext context)
@@ -47,14 +53,13 @@ class CustomDrawer extends StatelessWidget
               Divider(color: Colors.grey[300], thickness: 1, height: 2),
               Padding(padding: EdgeInsets.only(top: 5)),
 
-              DrawerTile(Icons.home, "Início", pageController, 0, titleController),
+              DrawerTile(Icons.home, "Início", HomeTab(), _setWidget, _getPage, 0),
               Divider(color: Colors.grey[300], thickness: 1),
 
-              DrawerTile(Icons.local_offer, "Bilheteria", pageController, 1, titleController),
-              DrawerTile(Icons.directions_bus, "Excursões", pageController, 2, titleController),
-              DrawerTile(Icons.person, "Sociedade", pageController, 3, titleController),
-              DrawerTile(Icons.location_on, "Encontre-nos", pageController, 4, titleController),
-              DrawerTile(Icons.calendar_today, "Calendario", pageController, 5, titleController),
+              DrawerTile(Icons.local_offer, "Bilheteria", TicketTab(), _setWidget, _getPage, 1),
+              DrawerTile(Icons.directions_bus, "Excursões", ExcursionTab(), _setWidget, _getPage, 2),
+              DrawerTile(Icons.person, "Sociedade", SocietyTab(), _setWidget, _getPage, 3),
+              DrawerTile(Icons.location_on, "Encontre-nos", MapTab(), _setWidget, _getPage, 4),
             ],
           )
         ],

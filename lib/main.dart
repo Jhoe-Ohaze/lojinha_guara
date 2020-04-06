@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lojinha_guara/screens/home_screen.dart';
+import 'package:lojinha_guara/screens/main_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,13 +13,13 @@ class MyApp extends StatelessWidget
 
     return MaterialApp
     (
-      title: 'Flutter Demo',
+      title: 'Guarapp',
       theme: ThemeData
       (
         primarySwatch: Colors.blue
       ),
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: MainScreen(),
     );
   }
 }

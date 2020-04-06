@@ -1,25 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lojinha_guara/widgets/custom_bar.dart';
 
 class TicketTab extends StatefulWidget
 {
-  final PageController pageController;
-  final TextEditingController titleController;
-
-  TicketTab(this.pageController, this.titleController);
+  final id = 1;
 
   @override
-  _TicketTabState createState() => _TicketTabState(pageController, titleController);
+  _TicketTabState createState() => _TicketTabState();
 }
 
 class _TicketTabState extends State<TicketTab>
 {
-  final PageController pageController;
-  final TextEditingController titleController;
-
-  _TicketTabState(this.pageController, this.titleController);
-
   TextEditingController _adultController;
   TextEditingController _kidController;
   TextEditingController _dateController;
@@ -85,8 +78,6 @@ class _TicketTabState extends State<TicketTab>
                     onTap: ()
                     {
                       Navigator.of(context).pop();
-                      titleController.text = "Excursões";
-                      pageController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
                     },
                     child: _imageExcursion,
                   ),
@@ -397,47 +388,55 @@ class _TicketTabState extends State<TicketTab>
 
   Widget _buildBody()
   {
-    return SingleChildScrollView
+    return Column
     (
-      child: Column
-      (
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>
-        [
-          _postFunctions(),
-          Container
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>
+      [
+        CustomBar("Bilheteria"),
+        SingleChildScrollView
           (
-            margin: EdgeInsets.all(10),
-            decoration: BoxDecoration
+          child: Column
             (
-              border: Border.all(width: 2, color: Colors.grey[700]),
-              borderRadius: BorderRadius.circular(8)
-            ),
-            child: ClipRRect
-            (
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>
+            [
+              _postFunctions(),
+              Container
+                (
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration
+                  (
+                    border: Border.all(width: 2, color: Colors.grey[700]),
+                    borderRadius: BorderRadius.circular(8)
+                ),
+                child: ClipRRect
+                  (
 
-              borderRadius: BorderRadius.circular(5),
-              child: Image.asset('my_assets/images/foto_pulseirinha.jpg'),
-            ),
+                  borderRadius: BorderRadius.circular(5),
+                  child: Image.asset('my_assets/images/foto_pulseirinha.jpg'),
+                ),
+              ),
+
+              Container
+                (
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+                child: Column
+                  (
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>
+                  [
+                    _buildDatePicker(),
+                    _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+                    _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+                    _buildPriceAndButton(),
+                  ],
+                ),
+              )
+            ],
           ),
-
-          Container
-          (
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-            child: Column
-            (
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>
-              [
-                _buildDatePicker(),
-                _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
-                _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-                _buildPriceAndButton(),
-              ],
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 

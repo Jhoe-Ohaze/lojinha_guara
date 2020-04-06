@@ -11,13 +11,16 @@ class CustomMap extends StatefulWidget
 
 class _CustomMapState extends State<CustomMap>
 {
+  Icon buttonIcon = Icon(Icons.satellite);
+  String labelText = "Satélite";
+
   Completer<GoogleMapController> _controller = Completer();
   static LatLng _location = LatLng(-1.306878, -48.027989);
 
   static final CameraPosition _initialLocation = CameraPosition
   (
     target: _location,
-    zoom: 10.8,
+    zoom: 13,
   );
 
   static Future<void> openMap() async
@@ -38,6 +41,7 @@ class _CustomMapState extends State<CustomMap>
   final Set<Marker> _markers = {};
   void initMarker()
   {
+/*
     _markers.add(Marker
     (
       markerId: MarkerId(_location.toString()),
@@ -49,8 +53,13 @@ class _CustomMapState extends State<CustomMap>
       ),
       icon: BitmapDescriptor.defaultMarker,
     ));
+*/
   }
 
+  Future<void> centerLocation() async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_initialLocation));
+  }
   @override
   void initState()
   {
@@ -64,44 +73,65 @@ class _CustomMapState extends State<CustomMap>
   {
     return Scaffold
     (
-      body: ClipRRect
+      body: Stack
       (
-        borderRadius: BorderRadius.circular(8),
-        child: Stack
-        (
-          alignment: Alignment.topRight,
-          children: <Widget>
-          [
-            GoogleMap
+        alignment: Alignment.bottomRight,
+        children: <Widget>
+        [
+          GoogleMap
+          (
+            indoorViewEnabled: true,
+            minMaxZoomPreference: MinMaxZoomPreference(9, 30),
+            mapType: mapType,
+            initialCameraPosition: _initialLocation,
+            onMapCreated: (GoogleMapController controller)
+            {
+              _controller.complete(controller);
+            },
+            markers: _markers,
+            buildingsEnabled: false,
+          ),
+          Container
+          (
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: 75),
+            child: Row
             (
-              myLocationButtonEnabled: true,
-              rotateGesturesEnabled: false,
-              scrollGesturesEnabled: false,
-              tiltGesturesEnabled: false,
-              zoomGesturesEnabled: false,
-              mapType: mapType,
-              initialCameraPosition: _initialLocation,
-              onMapCreated: (GoogleMapController controller)
-              {
-                _controller.complete(controller);
-              },
-              markers: _markers,
-              buildingsEnabled: false,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>
+              [
+                FloatingActionButton
+                (
+                  onPressed: (){centerLocation();},
+                  child: Icon(Icons.my_location),
+
+                ),
+                FloatingActionButton.extended
+                (
+                  label: Text(labelText),
+                  icon: buttonIcon,
+                  onPressed: ()
+                  {
+                    setState(()
+                    {
+                      if(mapType == MapType.hybrid)
+                      {
+                        mapType = MapType.normal;
+                        buttonIcon = Icon(Icons.satellite);
+                        labelText = "Satélite";
+                      }
+                      else
+                      {
+                        mapType = MapType.hybrid;
+                        buttonIcon = Icon(Icons.map);
+                        labelText = "Mapa";
+                      }
+                    });
+                  },
+                ),
+              ],
             ),
-            IconButton
-            (
-              icon: Icon(Icons.repeat, color: Colors.blue,),
-              onPressed: ()
-              {
-                setState(()
-                {
-                  if(mapType == MapType.hybrid) mapType = MapType.normal;
-                  else mapType = MapType.hybrid;
-                });
-              },
-            )
-          ],
-        ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended
       (

@@ -16,10 +16,8 @@ class CustomCalendar extends StatefulWidget
 class _CustomCalendarState extends State<CustomCalendar>
 {
   int weekday;
-  double _screenWidth;
   DateTime _currentDate;
   DateTime _selectedDate;
-  TextEditingController _dateController;
   String dropdownValue = "Aniversário";
 
   final DateTime _maxDate;
@@ -34,10 +32,6 @@ class _CustomCalendarState extends State<CustomCalendar>
     _selectedDate = _currentDate;
 
     weekday = _currentDate.weekday;
-
-    String initDate = DateFormat('dd/MM/yyyy').format(_currentDate).toString();
-
-    _dateController = new TextEditingController(text: initDate);
   }
 
   Widget CalendarBuilder()
