@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lojinha_guara/my_assets/image_assets.dart';
 
 class CustomBar extends StatelessWidget
 {
@@ -17,7 +18,7 @@ class CustomBar extends StatelessWidget
         alignment: Alignment.topLeft,
         children: <Widget>
         [
-          Image.asset('my_assets/images/menu.png', width: MediaQuery.of(context).size.width, fit: BoxFit.fill,),
+          ImageAssets.menuImage(MediaQuery.of(context).size.width),
           Container
             (
             margin: EdgeInsets.only(top: 7.5),
@@ -46,7 +47,7 @@ class CustomBar extends StatelessWidget
             margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.01),
             alignment: Alignment.centerLeft,
             child: MaterialButton
-              (
+            (
               highlightColor: Color(0x33FFFFFF),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               height: MediaQuery.of(context).size.height*0.065,

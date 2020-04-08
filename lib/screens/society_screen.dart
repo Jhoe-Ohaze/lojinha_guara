@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lojinha_guara/my_assets/image_assets.dart';
 
 class SocietyScreen extends StatefulWidget 
 {
@@ -12,20 +14,20 @@ class _SocietyScreenState extends State<SocietyScreen>
   Widget _createField(label, isEditable, width, limit, isNumeric, isDDD)
   {
     return Container
-      (
+    (
       width: width,
       padding: EdgeInsets.all(5),
       child: TextField
-        (
+      (
+        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         textCapitalization: TextCapitalization.characters,
         readOnly: !isEditable,
         textAlign: isDDD ? TextAlign.center : TextAlign.left,
         decoration: InputDecoration
-          (
+        (
           labelText: label,
           border: OutlineInputBorder(),
         ),
-        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         inputFormatters: isNumeric ? <TextInputFormatter>
         [
           LengthLimitingTextInputFormatter(limit),
@@ -44,57 +46,51 @@ class _SocietyScreenState extends State<SocietyScreen>
   {
     double _screenWidth = MediaQuery.of(context).size.width;
     return SizedBox
-      (
+    (
       height: MediaQuery.of(context).size.height*0.15,
       width: _screenWidth,
       child: Stack
-        (
+      (
         alignment: Alignment.center,
         children: <Widget>
         [
           Container
           (
             height: double.infinity,
-            child: Image.asset
-            (
-              'my_assets/images/send_button.png',
-              fit: BoxFit.fill,
-              color: Color.fromRGBO(255, 255, 255, 0.8),
-              colorBlendMode: BlendMode.modulate,
-            ),
+            child: ImageAssets.sendButtonImage
           ),
           Container
-            (
-            decoration: BoxDecoration
-              (
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(180), topRight: Radius.circular(180))
-            ),
+          (
             alignment: Alignment.center,
             width: _screenWidth*0.5,
             height: double.infinity,
+            decoration: BoxDecoration
+            (
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(180), topRight: Radius.circular(180))
+            ),
             child: MaterialButton
-              (
+            (
               shape: RoundedRectangleBorder
-                (
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
+              (
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
               ),
               onPressed: ()
               {
-                Scaffold.of(context).showSnackBar(SnackBar(content: Text("Tap"),));
+                Future<QuerySnapshot> snapshot = Firestore.instance.collection('sociedade').getDocuments();
               },
               child: Container
-                (
+              (
                 alignment: Alignment.center,
                 width: double.infinity,
                 height: double.infinity,
                 child: Text
-                  (
+                (
                   "Solicitar",
                   style: TextStyle
-                    (
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
+                  (
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
               ),
@@ -105,12 +101,11 @@ class _SocietyScreenState extends State<SocietyScreen>
     );
   }
 
-  @override
-  Widget build(BuildContext context)
+  Widget _buildBody(context)
   {
     double _screenWidth = MediaQuery.of(context).size.width;
     return Column
-      (
+    (
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>
       [
@@ -138,5 +133,11 @@ class _SocietyScreenState extends State<SocietyScreen>
         _buildSendButton()
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context)
+  {
+    return _buildBody(context);
   }
 }

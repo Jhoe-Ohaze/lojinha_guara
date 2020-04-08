@@ -12,7 +12,6 @@ class CustomMap extends StatefulWidget
 class _CustomMapState extends State<CustomMap>
 {
   Icon buttonIcon = Icon(Icons.satellite);
-  String labelText = "Satélite";
 
   Completer<GoogleMapController> _controller = Completer();
   static LatLng _location = LatLng(-1.306878, -48.027989);
@@ -41,7 +40,6 @@ class _CustomMapState extends State<CustomMap>
   final Set<Marker> _markers = {};
   void initMarker()
   {
-/*
     _markers.add(Marker
     (
       markerId: MarkerId(_location.toString()),
@@ -53,10 +51,10 @@ class _CustomMapState extends State<CustomMap>
       ),
       icon: BitmapDescriptor.defaultMarker,
     ));
-*/
   }
 
-  Future<void> centerLocation() async {
+  Future<void> centerLocation() async
+  {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(_initialLocation));
   }
@@ -64,7 +62,7 @@ class _CustomMapState extends State<CustomMap>
   void initState()
   {
     super.initState();
-    mapType = MapType.normal;
+    mapType = MapType.hybrid;
     initMarker();
   }
 
@@ -99,46 +97,51 @@ class _CustomMapState extends State<CustomMap>
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>
               [
-                FloatingActionButton
-                (
-                  onPressed: (){centerLocation();},
-                  child: Icon(Icons.my_location),
-
-                ),
                 FloatingActionButton.extended
                 (
-                  label: Text(labelText),
-                  icon: buttonIcon,
-                  onPressed: ()
-                  {
-                    setState(()
-                    {
-                      if(mapType == MapType.hybrid)
-                      {
-                        mapType = MapType.normal;
-                        buttonIcon = Icon(Icons.satellite);
-                        labelText = "Satélite";
-                      }
-                      else
-                      {
-                        mapType = MapType.hybrid;
-                        buttonIcon = Icon(Icons.map);
-                        labelText = "Mapa";
-                      }
-                    });
-                  },
+                  onPressed: (){centerLocation();},
+                  icon: Icon(Icons.my_location),
+                  label: Text("Centralizar"),
                 ),
               ],
             ),
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended
-      (
-        onPressed: openMap,
-        label: Text('Venha até nós!'),
-        icon: Icon(Icons.directions_bus),
-      ),
+      floatingActionButton: Row
+        (
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>
+        [
+          FloatingActionButton
+            (
+            child: buttonIcon,
+            onPressed: ()
+            {
+              setState(()
+              {
+                if(mapType == MapType.hybrid)
+                {
+                  mapType = MapType.normal;
+                  buttonIcon = Icon(Icons.satellite);
+                }
+                else
+                {
+                  mapType = MapType.hybrid;
+                  buttonIcon = Icon(Icons.map);
+                }
+              });
+            },
+          ),
+          Container(width: 5, height: 10,),
+          FloatingActionButton.extended
+            (
+              onPressed: openMap,
+              label: Text('Venha até nós!'),
+              icon: Icon(Icons.directions_bus)
+          ),
+        ],
+      )
     );
   }
 }

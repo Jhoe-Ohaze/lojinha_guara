@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:lojinha_guara/screens/main_screen.dart';
+import 'package:lojinha_guara/my_assets/image_assets.dart';
 
 class ExcursionScreen extends StatefulWidget
 {
@@ -13,6 +13,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
 {
   int weekday;
   double _screenWidth;
+  double _screenHeight;
   DateTime _currentDate;
   DateTime _selectedDate;
   TextEditingController _dateController;
@@ -36,7 +37,8 @@ class _ExcursionScreenState extends State<ExcursionScreen>
   @override
   Widget build(BuildContext context)
   {
-    _screenWidth = _screenWidth = MediaQuery.of(context).size.width;
+     _screenWidth = MediaQuery.of(context).size.width;
+     _screenHeight = MediaQuery.of(context).size.height;
 
     Widget _createField(label, isEditable, width, limit, isNumeric, isDDD)
     {
@@ -187,8 +189,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
                   dropdownValue = newValue;
                 });
               },
-              items: <String>["Aniversário", "Passeio"]
-                  .map<DropdownMenuItem<String>>((String value)
+              items: <String>["Aniversário", "Passeio"].map<DropdownMenuItem<String>>((String value)
               {
                 return DropdownMenuItem<String>
                 (
@@ -221,43 +222,37 @@ class _ExcursionScreenState extends State<ExcursionScreen>
     Widget _buildSendButton()
     {
       return SizedBox
-        (
+      (
         height: MediaQuery.of(context).size.height*0.15,
         width: _screenWidth,
         child: Stack
-          (
+        (
           alignment: Alignment.center,
           children: <Widget>
           [
             Container
-              (
+            (
               height: double.infinity,
-              child: Image.asset
-                (
-                'my_assets/images/send_button.png',
-                fit: BoxFit.fill,
-                color: Color.fromRGBO(255, 255, 255, 0.8),
-                colorBlendMode: BlendMode.modulate,
-              ),
+              child: ImageAssets.sendButtonImage,
             ),
             Container
-              (
+            (
               decoration: BoxDecoration
-                (
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(180), topRight: Radius.circular(180))
+              (
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(180), topRight: Radius.circular(180))
               ),
               alignment: Alignment.center,
               width: _screenWidth*0.5,
               height: double.infinity,
               child: MaterialButton
-                (
+              (
                 shape: RoundedRectangleBorder
-                  (
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
+                (
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
                 ),
                 onPressed: ()
                 {
-                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("Tap"),));
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("Tap")));
                 },
                 child: Container
                   (
@@ -265,7 +260,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
                   width: double.infinity,
                   height: double.infinity,
                   child: Text
-                    (
+                  (
                     "Solicitar",
                     style: TextStyle
                       (
@@ -282,41 +277,51 @@ class _ExcursionScreenState extends State<ExcursionScreen>
       );
     }
 
-    return Column
-    (
-      children: <Widget>
-      [
-        Container
+    Widget _buildBody()
+    {
+      return Column
         (
-          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-          child: Column
-          (
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>
-            [
-              _createField("Nome", true, _screenWidth, 100, false, false),
-              Row
+        children: <Widget>
+        [
+          Container
+            (
+            margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+            child: Column
               (
-                children: <Widget>
-                [
-                  _createField("DDD", true, 70.0, 2, true, true),
-                  _createField("Telefone", true, _screenWidth-80, 9, true, false),
-                ],
-              ),
-              Row
-              (
-                children: <Widget>
-                [
-                  _buildDatePicker(),
-                  _buildTypePicker()
-                ],
-              ),
-            ],
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>
+              [
+                _createField("Nome", true, _screenWidth, 100, false, false),
+                Row
+                  (
+                  children: <Widget>
+                  [
+                    _createField("DDD", true, 70.0, 2, true, true),
+                    _createField("Telefone", true, _screenWidth-80, 9, true, false),
+                  ],
+                ),
+                Row
+                  (
+                  children: <Widget>
+                  [
+                    _buildDatePicker(),
+                    _buildTypePicker()
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        Expanded(child: Container()),
-        _buildSendButton(),
-      ],
+          Expanded(child: Container()),
+          _buildSendButton(),
+        ],
+      );
+    }
+
+    return SizedBox
+      (
+        height: _screenHeight,
+        width: _screenWidth,
+        child: _buildBody()
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lojinha_guara/widgets/custom_bar.dart';
+import 'package:lojinha_guara/my_assets/image_assets.dart';
 
 class TicketTab extends StatefulWidget
 {
@@ -55,18 +56,12 @@ class _TicketTabState extends State<TicketTab>
         switch(option)
         {
           case 0:
-            double _imageWidth = MediaQuery.of(context).size.width - 80;
-            double _imageHeight = (5/3) * _imageWidth;
-            Image _imageExcursion = Image.asset
-            (
-              'my_assets/evento.jpeg',
-              width: _imageWidth,
-              height: _imageHeight,
-            );
+            double width = MediaQuery.of(context).size.width;
+            double height = MediaQuery.of(context).size.height;
 
             return Container
             (
-              margin: EdgeInsets.all(30),
+              margin: EdgeInsets.symmetric(horizontal: width*0.05, vertical: height*0.15),
               padding: EdgeInsets.all(10),
               color: Colors.white,
               child: Stack
@@ -79,7 +74,7 @@ class _TicketTabState extends State<TicketTab>
                     {
                       Navigator.of(context).pop();
                     },
-                    child: _imageExcursion,
+                    child: ImageAssets.excDialogImage,
                   ),
                   Row
                   (
@@ -103,7 +98,7 @@ class _TicketTabState extends State<TicketTab>
           case 1: return AlertDialog
           (
             title: Text("Aviso", textAlign: TextAlign.center,),
-            content: Text("O Park estará fechado na data selecionada", textAlign: TextAlign.justify,),
+            content: Text("O Park estará fechado na data selecionada", textAlign: TextAlign.justify),
             actions: <Widget>
             [
               FlatButton
@@ -414,7 +409,7 @@ class _TicketTabState extends State<TicketTab>
                   (
 
                   borderRadius: BorderRadius.circular(5),
-                  child: Image.asset('my_assets/images/foto_pulseirinha.jpg'),
+                  child: ImageAssets.ticketImage,
                 ),
               ),
 

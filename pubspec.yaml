@@ -26,7 +26,9 @@ dependencies:
   flutter_staggered_grid_view: ^0.3.0
   cloud_firestore: ^0.12.9
   transparent_image: ^1.0.0
-  firebase_auth: ^0.11.1+12
+  google_sign_in: ^4.4.1
+  firebase_storage: ^3.1.5
+  firebase_auth: ^0.15.5+3
   url_launcher: ^5.1.1
   flutter_calendar_carousel: ^1.4.11
   google_maps_flutter: ^0.5.24+1
@@ -47,13 +49,13 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - my_assets/images/
+    - lib/my_assets/images/
 
   fonts:
     - family: Fredoka
       fonts:
-        - asset: my_assets/fonts/FredokaOne-Regular.ttf
-        - asset: my_assets/fonts/FredokaOne-Bold.ttf
+        - asset: lib/my_assets/fonts/FredokaOne-Regular.ttf
+        - asset: lib/my_assets/fonts/FredokaOne-Bold.ttf
           weight: 500
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -55,7 +55,7 @@ class _CustomCalendarState extends State<CustomCalendar>
             {
               case 1: return AlertDialog
               (
-                title: Text("Aviso", textAlign: TextAlign.center,),
+                title: Text("Aviso", textAlign: TextAlign.center),
                 content: Text("O Park estará fechado na data selecionada", textAlign: TextAlign.justify,),
                 actions: <Widget>
                 [
@@ -73,7 +73,7 @@ class _CustomCalendarState extends State<CustomCalendar>
               case 2: return AlertDialog
                 (
                 title: Text("Aviso", textAlign: TextAlign.center,),
-                content: Text("Selecione datas a partir de hoje", textAlign: TextAlign.justify,),
+                content: Text("Selecione datas a partir de hoje", textAlign: TextAlign.justify),
                 actions: <Widget>
                 [
                   FlatButton
@@ -109,9 +109,6 @@ class _CustomCalendarState extends State<CustomCalendar>
         daysHaveCircularBorder: false,
         showOnlyCurrentMonthDate: true,
 
-        customGridViewPhysics: NeverScrollableScrollPhysics(),
-        pageScrollPhysics: BouncingScrollPhysics(),
-
         selectedDateTime: _selectedDate,
         minSelectedDate: _currentDate.subtract(Duration(days: 1)),
         maxSelectedDate: _maxDate,
@@ -145,7 +142,7 @@ class _CustomCalendarState extends State<CustomCalendar>
             return Container
             (
               alignment: Alignment.center,
-              child: Text(day.day.toString(), style: TextStyle(color: Colors.orange[100]),),
+              child: Text(day.day.toString(), style: TextStyle(color: Colors.grey[300])),
             );
           }
           else if (day.weekday == 2)
@@ -153,7 +150,7 @@ class _CustomCalendarState extends State<CustomCalendar>
             return Container
             (
               alignment: Alignment.center,
-              child: Icon(Icons.close, color: Colors.grey,),
+              child: Icon(Icons.close, color: Colors.grey),
             );
           }
           else

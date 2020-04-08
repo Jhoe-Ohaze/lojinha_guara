@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "438616143979-574sv1br9vtpckck5ab70kvuo1unakd1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.jojoe.lojinha_guara",
+            "certificate_hash": "52e9247fb1b5b6a044133a1e9356d9f92e5263de"
+          }
+        },
+        {
           "client_id": "438616143979-jgv86916mvlonek1htu6s845u475a39i.apps.googleusercontent.com",
           "client_type": 3
         }
