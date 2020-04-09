@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lojinha_guara/external_functions/custom_auth.dart';
 
 class ExitTile extends StatelessWidget
 {
   final IconData icon = Icons.exit_to_app;
   final String text = "Sair";
+
+  final Function _logOut;
+  ExitTile(this._logOut);
 
   @override
   Widget build(BuildContext context)
@@ -17,7 +19,7 @@ class ExitTile extends StatelessWidget
         onTap: ()
         {
           Navigator.of(context).pop();
-          CustomLogIn.logOut();
+          _logOut();
         },
         child: Container
         (

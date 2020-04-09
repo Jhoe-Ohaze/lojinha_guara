@@ -106,7 +106,7 @@ class _CustomCalendarState extends State<CustomCalendar>
         markedDatesMap: _markedDateMap,
         height: 420.0,
         isScrollable: true,
-        daysHaveCircularBorder: false,
+        daysHaveCircularBorder: null,
         showOnlyCurrentMonthDate: true,
 
         selectedDateTime: _selectedDate,
@@ -150,7 +150,7 @@ class _CustomCalendarState extends State<CustomCalendar>
             return Container
             (
               alignment: Alignment.center,
-              child: Icon(Icons.close, color: Colors.grey),
+              child: Icon(Icons.close, color: Colors.grey[300], size: 20,),
             );
           }
           else

@@ -1,35 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lojinha_guara/external_functions/custom_auth.dart';
 
 class LogInTile extends StatefulWidget
 {
-  final Function _setCurrentUser;
-  LogInTile(this._setCurrentUser);
+  FirebaseUser user;
+  final Function _setUser;
+  LogInTile(this._setUser, this.user);
 
   @override
-  _LogInTileState createState() => _LogInTileState(_setCurrentUser);
+  _LogInTileState createState() => _LogInTileState(_setUser, user);
 }
 
 class _LogInTileState extends State<LogInTile>
 {
-  FirebaseUser user;
+  final FirebaseUser user;
+  final Function _setUser;
+  _LogInTileState(this._setUser, this.user);
+
   Widget _currentWidget;
-  final Function _setCurrentUser;
-  _LogInTileState(this._setCurrentUser);
 
   @override
   void initState()
   {
     super.initState();
     _currentWidget = user == null ? loginButton():userProfile();
-  }
-
-  void LogIn() async
-  {
-    CustomLogIn login = CustomLogIn();
-    user = await login.getUser();
-    _setCurrentUser(user);
   }
 
   Widget loginButton()
@@ -50,21 +44,22 @@ class _LogInTileState extends State<LogInTile>
             ],
           ),
         ),
-        onTap: LogIn,
+        onTap: (){setState(() {_setUser();});},
       ),
     );
   }
 
   Widget userProfile()
   {
-
+    return Container();
   }
 
   @override
   Widget build(BuildContext context)
   {
+    _currentWidget = user == null ? loginButton():userProfile();
     return Material
-      (
+    (
       color: Colors.transparent,
       child: InkWell
         (
