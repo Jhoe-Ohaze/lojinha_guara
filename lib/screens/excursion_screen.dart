@@ -349,10 +349,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
                 (
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
                 ),
-                onPressed: ()
-                {
-                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("Tap")));
-                },
+                onPressed: sendData,
                 child: Container
                   (
                   alignment: Alignment.center,
