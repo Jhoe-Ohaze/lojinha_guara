@@ -212,92 +212,98 @@ class _TicketTabState extends State<TicketTab>
   Widget _buildDatePicker()
   {
     String initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
-    return Padding
-    (
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-      child: Container
-      (
-        decoration: BoxDecoration
+
+    void _showDatePicker() async
+    {
+      DateTime selectedDate = await showDatePicker
         (
-          border: Border.all(color: Colors.blue, width: 2),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row
-        (
-          children: <Widget>
-          [
-            Padding(padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text("Data", style: TextStyle(fontSize: 16))),
-            Expanded(child: Container()),
-            Row
+          context: context,
+          initialDate: _selectedDate,
+          firstDate: _currentDate.subtract(Duration(days: 1)),
+          lastDate: DateTime(2020, 12, 31),
+          builder: (context, child)
+          {
+            return Theme
               (
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>
-              [
-                Container
+              data: ThemeData.light(),
+              child: child,
+            );
+          }
+      );
+
+      if(selectedDate != null)
+      {
+        setState(()
+        {
+          int auxWeekday = weekday;
+          weekday = selectedDate.weekday;
+          if(weekday != 2)
+          {
+            _selectedDate = selectedDate;
+            initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
+            _dateController.text = initDate;
+          }
+          else
+          {
+            weekday = auxWeekday;
+            _showDialog(1);
+          }
+        });
+      }
+    };
+
+    return GestureDetector
+    (
+      onTap: _showDatePicker,
+      child: Padding
+        (
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+        child: Container
+          (
+          decoration: BoxDecoration
+            (
+            border: Border.all(color: Colors.blue, width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row
+            (
+            children: <Widget>
+            [
+              Padding(padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text("Data", style: TextStyle(fontSize: 16))),
+              Expanded(child: Container()),
+              Row
                 (
-                  width: 90,
-                  child: TextField
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>
+                [
+                  Container
                   (
-                    readOnly: true,
-                    cursorColor: Color(0x00ffffff),
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.numberWithOptions(),
-                    controller: _dateController,
-                    decoration: InputDecoration
+                    width: 90,
+                    child: TextField
                     (
-                        border: InputBorder.none
+                      enabled: false,
+                      readOnly: true,
+                      cursorColor: Color(0x00ffffff),
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.numberWithOptions(),
+                      controller: _dateController,
+                      decoration: InputDecoration
+                        (
+                          border: InputBorder.none
+                      ),
                     ),
                   ),
-                ),
 
-                IconButton
-                (
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  iconSize: 20,
-                  icon: Icon(Icons.calendar_today, color: Colors.blue,),
-                  onPressed: () async
-                  {
-                    DateTime selectedDate = await showDatePicker
+                  Container
                     (
-                      context: context,
-                      initialDate: _selectedDate,
-                      firstDate: _currentDate.subtract(Duration(days: 1)),
-                      lastDate: DateTime(2020, 12, 31),
-                      builder: (context, child)
-                      {
-                        return Theme
-                        (
-                          data: ThemeData.light(),
-                          child: child,
-                        );
-                      }
-                    );
-
-                    if(selectedDate != null)
-                    {
-                      setState(()
-                      {
-                        int auxWeekday = weekday;
-                        weekday = selectedDate.weekday;
-                        if(weekday != 2)
-                        {
-                          _selectedDate = selectedDate;
-                          initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
-                          _dateController.text = initDate;
-                        }
-                        else
-                        {
-                          weekday = auxWeekday;
-                          _showDialog(1);
-                        }
-                      });
-                    }
-                  },
-                ),
-              ],
-            )
-          ],
+                    margin: EdgeInsets.symmetric(horizontal: 10),
+                    child: Icon(Icons.calendar_today, color: Colors.blue,),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -353,17 +359,19 @@ class _TicketTabState extends State<TicketTab>
             Expanded
               (
                 child: Container
-                  (
+                (
+                  height: 52,
                   decoration: BoxDecoration
-                    (
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.redAccent
+                  (
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.redAccent
                   ),
                   margin: EdgeInsets.only(left: 5),
                   child :InkWell
-                    (
+                  (
                     child: TextField
-                      (
+                    (
+                      enabled: false,
                       readOnly: true,
                       textAlign: TextAlign.center,
                       decoration: InputDecoration
@@ -390,15 +398,15 @@ class _TicketTabState extends State<TicketTab>
       [
         CustomBar("Bilheteria"),
         SingleChildScrollView
-          (
+        (
           child: Column
-            (
+          (
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>
             [
               _postFunctions(),
               Container
-                (
+              (
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration
                   (
@@ -414,7 +422,7 @@ class _TicketTabState extends State<TicketTab>
               ),
 
               Container
-                (
+              (
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
                 child: Column
                   (

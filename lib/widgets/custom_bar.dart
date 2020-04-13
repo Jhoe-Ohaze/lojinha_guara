@@ -18,7 +18,7 @@ class CustomBar extends StatelessWidget
         alignment: Alignment.topLeft,
         children: <Widget>
         [
-          ImageAssets.menuImage(MediaQuery.of(context).size.width),
+          ImageAssets.menuBlueImage(MediaQuery.of(context).size.width),
           Container
             (
             margin: EdgeInsets.only(top: 7.5),

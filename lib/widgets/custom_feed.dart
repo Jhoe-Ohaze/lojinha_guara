@@ -17,7 +17,7 @@ class CustomFeed extends StatelessWidget
     (
       decoration: BoxDecoration
       (
-        border: Border.all(color: Colors.blue),
+        border: Border.all(color: Colors.blue, width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column
@@ -30,7 +30,7 @@ class CustomFeed extends StatelessWidget
             height: 150,
             child: ClipRRect
               (
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
               child: image,
             ),
           ),
@@ -44,7 +44,7 @@ class CustomFeed extends StatelessWidget
               [
                 Container
                  (
-                  padding: EdgeInsets.symmetric(vertical: 15),
+                  padding: EdgeInsets.symmetric(vertical: 10),
                   child: Text(title, style: TextStyle(fontSize: 25, fontFamily: 'Fredoka')),
                 ),
                 Text(text, style: TextStyle(fontFamily: 'Fredoka', color: Colors.grey[600])),

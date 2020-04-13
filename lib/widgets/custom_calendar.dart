@@ -98,7 +98,7 @@ class _CustomCalendarState extends State<CustomCalendar>
       margin: EdgeInsets.all(16.0),
       decoration: BoxDecoration
       (
-        border: Border.all(color: Colors.blue),
+        border: Border.all(color: Colors.blue, width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
       child: CalendarCarousel<Event>
@@ -114,15 +114,19 @@ class _CustomCalendarState extends State<CustomCalendar>
         maxSelectedDate: _maxDate,
 
         weekendTextStyle: TextStyle(color: Colors.red),
-        weekdayTextStyle: TextStyle(color: Color(0xFF0088FF)),
+        weekdayTextStyle: TextStyle(color: Colors.grey),
 
-        selectedDayButtonColor: Colors.blue,
+        selectedDayButtonColor: Colors.lightGreen[400],
         selectedDayTextStyle: TextStyle(color: Colors.white),
         selectedDayBorderColor: Colors.transparent,
 
         todayBorderColor: Colors.transparent,
         todayButtonColor: Colors.transparent,
         todayTextStyle: TextStyle(color: weekday == 0 || weekday == 6 ? Colors.red:Colors.black),
+
+        leftButtonIcon: Icon(Icons.chevron_left, color: Colors.blue),
+        rightButtonIcon: Icon(Icons.chevron_right, color: Colors.blue),
+        headerTextStyle: TextStyle(color: Colors.black, fontSize: 20),
 
         customDayBuilder:
         (   /// you can provide your own build function to make custom day containers

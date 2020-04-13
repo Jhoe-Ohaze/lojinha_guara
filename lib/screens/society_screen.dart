@@ -11,7 +11,12 @@ class SocietyScreen extends StatefulWidget
 
 class _SocietyScreenState extends State<SocietyScreen> 
 {
-  Widget _createField(label, isEditable, width, limit, isNumeric, isDDD)
+  final nomeController = TextEditingController();
+  final dddController = TextEditingController();
+  final telController = TextEditingController();
+  final cpfController = TextEditingController();
+
+  Widget _createField(label, width, limit, isNumeric, isDDD, TextEditingController _controller)
   {
     return Container
     (
@@ -21,8 +26,8 @@ class _SocietyScreenState extends State<SocietyScreen>
       (
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         textCapitalization: TextCapitalization.characters,
-        readOnly: !isEditable,
         textAlign: isDDD ? TextAlign.center : TextAlign.left,
+        onChanged: (text){print(_controller.text);},
         decoration: InputDecoration
         (
           labelText: label,
@@ -38,6 +43,7 @@ class _SocietyScreenState extends State<SocietyScreen>
           LengthLimitingTextInputFormatter(limit),
           WhitelistingTextInputFormatter(RegExp("[A-Z ]")),
         ],
+        controller: _controller,
       ),
     );
   }
@@ -45,6 +51,86 @@ class _SocietyScreenState extends State<SocietyScreen>
   Widget _buildSendButton()
   {
     double _screenWidth = MediaQuery.of(context).size.width;
+
+    void sendData() async
+    {
+      QuerySnapshot snapshot = await Firestore.instance.collection('consultores').orderBy('Nome').getDocuments();
+      List<DocumentSnapshot> consultorList = snapshot.documents.toList();
+
+      snapshot = await Firestore.instance.collection('sociedade').orderBy('DataExpedicao', descending: true).limit(1).getDocuments();
+      if(snapshot.documents.length == 0)
+      {
+        String nome = nomeController.text;
+        int telefone = int.parse(dddController.text + telController.text);
+        int cpf = int.parse(cpfController.text);
+
+        Firestore.instance.collection('sociedade').add
+          (
+            {
+              "Numero": telefone,
+              "LigacaoPendente": true,
+              "Consultor": consultorList.elementAt(0).data["Nome"],
+              "Nome": nome,
+              "CPF": cpf,
+              "DataExpedicao": DateTime.now(),
+              "DataLigacao": null,
+            }
+        );
+
+        nomeController.clear();
+        dddController.clear();
+        telController.clear();
+        cpfController.clear();
+      }
+      else
+      {
+        DocumentSnapshot lastDocument = snapshot.documents.elementAt(0);
+
+        String lastCons = lastDocument.data['Consultor'];
+        String nextCons = "";
+        int count = 0;
+        for(DocumentSnapshot doc in consultorList)
+        {
+          count++;
+          if(lastCons == doc.data['Nome'])
+          {
+            if(count >= consultorList.length)
+              nextCons = consultorList.elementAt(0).data['Nome'];
+            else
+              nextCons = consultorList.elementAt(count).data['Nome'];
+          }
+        }
+
+        String nome = nomeController.text;
+        int telefone = int.parse(dddController.text + telController.text);
+        int cpf = int.parse(cpfController.text);
+
+        Firestore.instance.collection('sociedade').add
+          (
+            {
+              "Numero": telefone,
+              "LigacaoPendente": true,
+              "Consultor": nextCons,
+              "Nome": nome,
+              "CPF": cpf,
+              "DataExpedicao": DateTime.now(),
+              "DataLigacao": null,
+            }
+        );
+
+        nomeController.clear();
+        dddController.clear();
+        telController.clear();
+        cpfController.clear();
+      }
+
+      setState(()
+      {
+        Scaffold.of(context).hideCurrentSnackBar();
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
+      });
+    }
+
     return SizedBox
     (
       height: MediaQuery.of(context).size.height*0.15,
@@ -74,10 +160,7 @@ class _SocietyScreenState extends State<SocietyScreen>
               (
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
               ),
-              onPressed: ()
-              {
-                Future<QuerySnapshot> snapshot = Firestore.instance.collection('sociedade').getDocuments();
-              },
+              onPressed: sendData,
               child: Container
               (
                 alignment: Alignment.center,
@@ -116,14 +199,14 @@ class _SocietyScreenState extends State<SocietyScreen>
           (
             children: <Widget>
             [
-              _createField("Nome", true, _screenWidth, 100, false, false),
+              _createField("Nome", _screenWidth, 100, false, false, nomeController),
               Row
                 (
                 children: <Widget>
                 [
-                  _createField("DDD", true, 70.0, 2, true, true),
-                  _createField("Telefone", true, 120.0, 9, true, false),
-                  _createField("CPF", true, _screenWidth - 200, 11, true, false)
+                  _createField("DDD", 70.0, 2, true, true, dddController),
+                  _createField("Telefone", 120.0, 9, true, false, telController),
+                  _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
                 ],
               ),
             ],

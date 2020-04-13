@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 class ImageAssets
 {
   static String _root = "lib/my_assets/images/";
-  static Image menuImage(width) => Image.asset(_root+'menu.png',
+  static Image menuBlueImage(width) => Image.asset(_root+'menu_blue.png',
+      alignment: Alignment.topLeft, width: width, fit: BoxFit.fill);
+
+  static Image menuRedImage(width) => Image.asset(_root+'menu_red.png',
       alignment: Alignment.topLeft, width: width, fit: BoxFit.fill);
 
   static Image logoImage = Image.asset(_root+'logo_drawer.png',

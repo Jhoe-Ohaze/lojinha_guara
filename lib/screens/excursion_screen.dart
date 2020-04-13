@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ExcursionScreen extends StatefulWidget
 {
@@ -18,6 +19,10 @@ class _ExcursionScreenState extends State<ExcursionScreen>
   DateTime _selectedDate;
   TextEditingController _dateController;
   String dropdownValue = "Aniversário";
+
+  final nomeController = TextEditingController();
+  final dddController = TextEditingController();
+  final telController = TextEditingController();
 
   @override
   void initState()
@@ -108,7 +113,8 @@ class _ExcursionScreenState extends State<ExcursionScreen>
       String initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
       return Container
       (
-        width: 125,
+        width: 165,
+        alignment: Alignment.center,
         padding: EdgeInsets.all(5),
         child: InkWell
         (
@@ -150,6 +156,21 @@ class _ExcursionScreenState extends State<ExcursionScreen>
               });
             }
           },
+          child: InputDecorator
+          (
+            decoration: new InputDecoration
+            (
+              contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15),
+              labelText:("Data da Excursão"),
+              enabledBorder:  OutlineInputBorder
+              (
+                borderSide: BorderSide(color: Colors.grey)
+              ),
+              border: OutlineInputBorder
+              (
+                borderSide: BorderSide(color: Colors.black)
+              )
+            ),
             child: TextField
             (
               enabled: false,
@@ -160,11 +181,12 @@ class _ExcursionScreenState extends State<ExcursionScreen>
               controller: _dateController,
               decoration: InputDecoration
               (
-                labelText: "Data",
-                border: OutlineInputBorder(),
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none
               ),
             ),
           )
+        )
       );
     }
 
@@ -173,7 +195,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
       return Container
       (
         padding: EdgeInsets.all(5),
-        width: _screenWidth - 135,
+        width: _screenWidth - 175,
         alignment: Alignment.centerRight,
         child: InputDecorator
         (
@@ -221,6 +243,83 @@ class _ExcursionScreenState extends State<ExcursionScreen>
 
     Widget _buildSendButton()
     {
+      void sendData() async
+      {
+        QuerySnapshot snapshot = await Firestore.instance.collection('vendedores').orderBy('Nome').getDocuments();
+        List<DocumentSnapshot> consultorList = snapshot.documents.toList();
+
+        snapshot = await Firestore.instance.collection('excursao').orderBy('DataExpedicao', descending: true).limit(1).getDocuments();
+        if(snapshot.documents.length == 0)
+        {
+          String nome = nomeController.text;
+          int telefone = int.parse(dddController.text + telController.text);
+
+          Firestore.instance.collection('excursao').add
+            (
+              {
+                "Numero": telefone,
+                "LigacaoPendente": true,
+                "Vendedor": consultorList.elementAt(0).data["Nome"],
+                "Nome": nome,
+                "Tipo": dropdownValue,
+                "DataSolicitada": _selectedDate,
+                "DataExpedicao": DateTime.now(),
+                "DataLigacao": null,
+              }
+          );
+
+          nomeController.clear();
+          dddController.clear();
+          telController.clear();
+        }
+        else
+        {
+          DocumentSnapshot lastDocument = snapshot.documents.elementAt(0);
+
+          String lastCons = lastDocument.data['Vendedor'];
+          String nextCons = "";
+          int count = 0;
+          for(DocumentSnapshot doc in consultorList)
+          {
+            count++;
+            if(lastCons == doc.data['Nome'])
+            {
+              if(count >= consultorList.length)
+                nextCons = consultorList.elementAt(0).data['Nome'];
+              else
+                nextCons = consultorList.elementAt(count).data['Nome'];
+            }
+          }
+
+          String nome = nomeController.text;
+          int telefone = int.parse(dddController.text + telController.text);
+
+          Firestore.instance.collection('excursao').add
+            (
+              {
+                "Numero": telefone,
+                "LigacaoPendente": true,
+                "Vendedor": nextCons,
+                "Tipo": dropdownValue,
+                "Nome": nome,
+                "DataSolicitada": _selectedDate,
+                "DataExpedicao": DateTime.now(),
+                "DataLigacao": null,
+              }
+          );
+
+          nomeController.clear();
+          dddController.clear();
+          telController.clear();
+        }
+
+        setState(()
+        {
+          Scaffold.of(context).hideCurrentSnackBar();
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
+        });
+      }
+
       return SizedBox
       (
         height: MediaQuery.of(context).size.height*0.15,

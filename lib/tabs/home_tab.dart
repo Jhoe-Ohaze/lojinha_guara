@@ -52,19 +52,15 @@ class HomeTab extends StatelessWidget
       }
     }
 
-    void openTicketTab()
-    {
-      _setCurrentWidget(1, TicketTab());
-    }
+    void openTicketTab() => _setCurrentWidget(1, TicketTab());
 
-    return Column
+    return Stack
     (
       children: <Widget>
       [
-        CustomBar("Início"),
         SizedBox
         (
-          height: MediaQuery.of(context).size.height*0.85,
+          height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: SingleChildScrollView
             (
@@ -74,6 +70,10 @@ class HomeTab extends StatelessWidget
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>
               [
+                SizedBox(height: MediaQuery.of(context).size.height*0.15,),
+
+                //////////////////////////////////////////////////////////////////////
+                ////* Feed 1 *////////////////////////////////////////////////////////
                 Container
                   (
                   margin: EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
@@ -86,7 +86,11 @@ class HomeTab extends StatelessWidget
                       openLink,
                   ),
                 ),
+                //////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////
 
+                //////////////////////////////////////////////////////////////////////
+                ////* Home Buttons *//////////////////////////////////////////////////
                 Container
                   (
                   margin: EdgeInsets.symmetric(vertical: 2.5),
@@ -100,6 +104,8 @@ class HomeTab extends StatelessWidget
                     ],
                   ),
                 ),
+                //////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////
 
                 //////////////////////////////////////////////////////////////////////
                 ////* Calendar *//////////////////////////////////////////////////////
@@ -115,6 +121,7 @@ class HomeTab extends StatelessWidget
             ),
           ),
         ),
+        CustomBar("Início"),
       ],
     );
   }
