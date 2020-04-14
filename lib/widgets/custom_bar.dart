@@ -11,8 +11,8 @@ class CustomBar extends StatelessWidget
   Widget build(BuildContext context)
   {
     return SizedBox
-      (
-      height: MediaQuery.of(context).size.height*0.15,
+    (
+      height: 120,
       child: Stack
         (
         alignment: Alignment.topLeft,

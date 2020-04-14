@@ -28,19 +28,16 @@ class _HomeButtonsState extends State<HomeButtons>
   {
     if(_side == 1)
     {
-      return GestureDetector
-        (
-        onTap: _function,
+      return MaterialButton
+      (
+        onPressed: _function,
+        shape: RoundedRectangleBorder(side: BorderSide(color: Colors.blue, width: 2),
+          borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8))),
         child: Container
-          (
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        (
+          padding: EdgeInsets.symmetric(vertical: 15),
           alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width/2 -7.5,
-          decoration: BoxDecoration
-            (
-            border: Border.all(color: Colors.blue, width: 2),
-            borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
-          ),
+          width: MediaQuery.of(context).size.width/2 -39.5,
           child: Column
             (
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,19 +58,16 @@ class _HomeButtonsState extends State<HomeButtons>
 
     else
       {
-        return GestureDetector
-          (
-          onTap: _function,
+        return MaterialButton
+        (
+          onPressed: _function,
+          shape: RoundedRectangleBorder(side: BorderSide(color: Colors.blue, width: 2),
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8))),
           child: Container
             (
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: EdgeInsets.symmetric( vertical: 15),
             alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width/2 -7.5,
-            decoration: BoxDecoration
-              (
-              border: Border.all(color: Colors.blue, width: 2),
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
-            ),
+            width: MediaQuery.of(context).size.width/2 -39.5,
             child: Column
               (
               crossAxisAlignment: CrossAxisAlignment.center,

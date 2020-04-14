@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
+import 'package:lojinha_guara/widgets/custom_bar.dart';
 
 class SocietyScreen extends StatefulWidget 
 {
@@ -15,6 +16,39 @@ class _SocietyScreenState extends State<SocietyScreen>
   final dddController = TextEditingController();
   final telController = TextEditingController();
   final cpfController = TextEditingController();
+
+  void _showDialog(int option)
+  {
+    showDialog
+      (
+        context: context,
+        builder: (context)
+        {
+          switch(option)
+          {
+            case 2:
+              double width = MediaQuery.of(context).size.width;
+              double height = MediaQuery.of(context).size.height;
+
+              return Container
+                (
+                  color: Color(0x11BBBBBB),
+                  width: width,
+                  height: height,
+                  alignment: Alignment.center,
+                  child: SizedBox
+                    (
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(),
+                  )
+              );
+
+            default: return null;
+          }
+        }
+    );
+  }
 
   Widget _createField(label, width, limit, isNumeric, isDDD, TextEditingController _controller)
   {
@@ -54,6 +88,7 @@ class _SocietyScreenState extends State<SocietyScreen>
 
     void sendData() async
     {
+      _showDialog(2);
       QuerySnapshot snapshot = await Firestore.instance.collection('consultores').orderBy('Nome').getDocuments();
       List<DocumentSnapshot> consultorList = snapshot.documents.toList();
 
@@ -122,10 +157,12 @@ class _SocietyScreenState extends State<SocietyScreen>
         dddController.clear();
         telController.clear();
         cpfController.clear();
+        FocusScope.of(context).requestFocus(FocusNode());
       }
 
       setState(()
       {
+        Navigator.of(context).pop();
         Scaffold.of(context).hideCurrentSnackBar();
         Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
       });
@@ -184,36 +221,60 @@ class _SocietyScreenState extends State<SocietyScreen>
     );
   }
 
-  Widget _buildBody(context)
+  Widget _buildBody()
   {
     double _screenWidth = MediaQuery.of(context).size.width;
-    return Column
+    double _screenHeight = MediaQuery.of(context).size.height;
+    return Stack
     (
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>
       [
-        Container
+        SizedBox
         (
-          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+          width: _screenWidth,
+          height: _screenHeight,
           child: Column
           (
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>
             [
-              _createField("Nome", _screenWidth, 100, false, false, nomeController),
-              Row
+              SizedBox(height: 120),
+              SingleChildScrollView
                 (
-                children: <Widget>
-                [
-                  _createField("DDD", 70.0, 2, true, true, dddController),
-                  _createField("Telefone", 120.0, 9, true, false, telController),
-                  _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
-                ],
+                physics: BouncingScrollPhysics(),
+                child: Column
+                  (
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>
+                  [
+                    Container
+                      (
+                      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                      child: Column
+                        (
+                        children: <Widget>
+                        [
+                          _createField("Nome", _screenWidth, 100, false, false, nomeController),
+                          Row
+                            (
+                            children: <Widget>
+                            [
+                              _createField("DDD", 70.0, 2, true, true, dddController),
+                              _createField("Telefone", 120.0, 9, true, false, telController),
+                              _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    _buildSendButton()
+                  ],
+                ),
               ),
             ],
-          ),
+          )
         ),
-        Expanded(child: Container()),
-        _buildSendButton()
+        CustomBar("Quero Ser Sócio")
       ],
     );
   }
@@ -221,6 +282,6 @@ class _SocietyScreenState extends State<SocietyScreen>
   @override
   Widget build(BuildContext context)
   {
-    return _buildBody(context);
+    return _buildBody();
   }
 }

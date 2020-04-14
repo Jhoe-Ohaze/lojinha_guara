@@ -50,21 +50,16 @@ class CustomFeed extends StatelessWidget
                 Text(text, style: TextStyle(fontFamily: 'Fredoka', color: Colors.grey[600])),
                 Container
                 (
-                  margin: EdgeInsets.only(top: 20, bottom: 10),
+                  margin: EdgeInsets.only(top: 20, bottom: 5),
                   alignment: Alignment.centerRight,
-                  child: GestureDetector
+                  child: MaterialButton
                   (
-                    onTap: buttonFunction,
-                    child: Container
-                    (
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration
-                      (
-                        border: Border.all(color: Colors.blue, width: 1.5),
-                        borderRadius: BorderRadius.circular(20)
-                      ),
-                      child: Text(buttonText, style: TextStyle(fontFamily: 'Fredoka', color: Colors.blue), textAlign: TextAlign.justify),
-                    ),
+                    shape: RoundedRectangleBorder(side: BorderSide
+                      (color: Colors.blue, width: 1.5),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Text(buttonText, style: TextStyle
+                      (fontFamily: 'Fredoka', color: Colors.blue), textAlign: TextAlign.justify),
+                    onPressed: buttonFunction,
                   ),
                 ),
               ],

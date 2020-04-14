@@ -58,9 +58,9 @@ flutter:
         - asset: lib/my_assets/fonts/FredokaOne-Regular.ttf
         - asset: lib/my_assets/fonts/FredokaOne-Bold.ttf
           weight: 500
-    - family: Ticket
+    - family: Icons
       fonts:
-        - asset: lib/my_assets/icons/ticket_icon.ttf
+        - asset: lib/my_assets/icons/IconFont.ttf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

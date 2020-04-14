@@ -27,6 +27,7 @@ class DrawerTile extends StatelessWidget
       (
         onTap: ()
         {
+          FocusScope.of(context).requestFocus(FocusNode());
           Navigator.of(context).pop();
           _setWidget(page, Container());
           _setWidget(page, _targetWidget);

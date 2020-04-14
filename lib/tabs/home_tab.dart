@@ -52,6 +52,32 @@ class HomeTab extends StatelessWidget
       }
     }
 
+    Future<void> openFacebook() async
+    {
+      String link = "http://www.facebook.com/guarapark";
+      if(await canLaunch(link))
+      {
+        launch(link);
+      }
+      else
+      {
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Não foi possível abrir")));
+      }
+    }
+
+    Future<void> openInstagram() async
+    {
+      String link = "http://www.instagram.com/guarapark";
+      if(await canLaunch(link))
+      {
+        launch(link);
+      }
+      else
+      {
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Não foi possível abrir")));
+      }
+    }
+
     void openTicketTab() => _setCurrentWidget(1, TicketTab());
 
     return Stack
@@ -70,27 +96,27 @@ class HomeTab extends StatelessWidget
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>
               [
-                SizedBox(height: MediaQuery.of(context).size.height*0.15,),
+                SizedBox(height: 120),
 
-                //////////////////////////////////////////////////////////////////////
-                ////* Feed 1 *////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+                ////* Feed 1 *//////////////////////////////////////////////////
                 Container
-                  (
+                (
                   margin: EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
                   child: CustomFeed
-                    (
-                      ImageAssets.testFeedImage,
-                      "Titulo da noticia",
-                      "Aqui vamos ter um resumo sobre a noticia, podemos descrever melhor a noticia anunciada anteriormente.",
-                      "Botao muito doido",
-                      openLink,
+                  (
+                    ImageAssets.testFeedImage,
+                    "Titulo da noticia",
+                    "Aqui vamos ter um resumo sobre a noticia, podemos descrever melhor a noticia anunciada anteriormente.",
+                    "Botao muito doido",
+                    openLink,
                   ),
                 ),
-                //////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
 
-                //////////////////////////////////////////////////////////////////////
-                ////* Home Buttons *//////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+                ////* Home Buttons *////////////////////////////////////////////
                 Container
                   (
                   margin: EdgeInsets.symmetric(vertical: 2.5),
@@ -104,18 +130,49 @@ class HomeTab extends StatelessWidget
                     ],
                   ),
                 ),
-                //////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
 
-                //////////////////////////////////////////////////////////////////////
-                ////* Calendar *//////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+                ////* Calendar *////////////////////////////////////////////////
                 SizedBox
-                  (
+                (
                   height: 450,
                   child: CustomCalendar(DateTime(2020, 12, 31)),
                 ),
-                //////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+
+                ////////////////////////////////////////////////////////////////
+                ////* Texto *///////////////////////////////////////////////////
+                Container
+                (
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  width: MediaQuery.of(context).size.width,
+                  child: Text("Nos acompanhe nas Redes Sociais!", style: TextStyle
+                    (fontFamily: 'Fredoka', fontSize: 30, color: Colors.grey[700]),
+                      textAlign: TextAlign.center),
+                ),
+                ////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
+
+                ////////////////////////////////////////////////////////////////
+                ////* Home Buttons Final *//////////////////////////////////////
+                Container
+                (
+                  margin: EdgeInsets.symmetric(vertical: 15),
+                  child: Row
+                    (
+                    children: <Widget>
+                    [
+                      HomeButtons(openFacebook, IconAssets.facebook, "Facebook", 1),
+                      SizedBox(width: 15, height: 30),
+                      HomeButtons(openInstagram, IconAssets.instagram, "Instagram", 2),
+                    ],
+                  ),
+                ),
+                ////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////
 
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lojinha_guara/widgets/custom_bar.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
 
@@ -29,12 +30,17 @@ class _TicketTabState extends State<TicketTab>
   double adultPrice = 0.00;
   double kidPrice = 0.00;
   double totalPrice = 0.00;
+  bool firstRun = true;
 
   int weekday = 0;
+
+  QuerySnapshot snapshot;
+  List<DocumentSnapshot> priceList;
 
   @override
   void initState()
   {
+    initPrices();
     super.initState();
     _adultController = new TextEditingController(text: adultAmount.toString());
     _kidController = new TextEditingController(text: kidAmount.toString());
@@ -44,6 +50,35 @@ class _TicketTabState extends State<TicketTab>
     String initDate = DateFormat('dd/MM/yyyy').format(DateTime.now()).toString();
     _dateController = new TextEditingController(text: initDate);
     _valueController = new TextEditingController(text: "0.00");
+  }
+
+  void initPrices() async => await setFirstPrices();
+
+  Future<void> setFirstPrices() async
+  {
+    snapshot = await Firestore.instance.collection('preco_bilheteria').orderBy('Nome').getDocuments();
+    priceList = snapshot.documents.toList();
+
+    if(weekday == 6 || weekday == 7)
+    {
+      for(DocumentSnapshot doc in priceList)
+      {
+        if(doc.data['Nome'] == "Adulto FDS")
+          adultPrice = double.parse(doc.data['Valor']);
+        if(doc.data['Nome'] == "Criança FDS")
+          kidPrice = double.parse(doc.data['Valor']);
+      }
+    }
+    else
+    {
+      for(DocumentSnapshot doc in priceList)
+      {
+        if(doc.data['Nome'] == "Adulto Semana")
+          adultPrice = double.parse(doc.data['Valor']);
+        if(doc.data['Nome'] == "Criança Semana")
+         kidPrice = double.parse(doc.data['Valor']);
+      }
+    }
   }
 
   void _showDialog(int option)
@@ -249,6 +284,27 @@ class _TicketTabState extends State<TicketTab>
             _showDialog(1);
           }
         });
+
+        if(weekday == 6 || weekday == 7)
+        {
+          for(DocumentSnapshot doc in priceList)
+          {
+            if(doc.data['Nome'] == "Adulto FDS")
+              adultPrice = doc.data['Valor'];
+            if(doc.data['Nome'] == "Criança FDS")
+              kidPrice = doc.data['Valor'];
+          }
+        }
+        else
+        {
+          for(DocumentSnapshot doc in priceList)
+          {
+            if(doc.data['Nome'] == "Adulto Semana")
+              adultPrice = doc.data['Valor'];
+            if(doc.data['Nome'] == "Criança FDS")
+              kidPrice = doc.data['Valor'];
+          }
+        }
       }
     };
 
@@ -367,20 +423,25 @@ class _TicketTabState extends State<TicketTab>
                     color: Colors.redAccent
                   ),
                   margin: EdgeInsets.only(left: 5),
-                  child :InkWell
+                  child: MaterialButton
                   (
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                     child: TextField
                     (
                       enabled: false,
-                      readOnly: true,
                       textAlign: TextAlign.center,
                       decoration: InputDecoration
-                        (
-                          hintText: "Finalizar Compra",
-                          hintStyle: TextStyle(color: Colors.white, fontSize: 16),
-                          border: InputBorder.none
+                      (
+                        hintText: "Finalizar Compra",
+                        hintStyle: TextStyle(color: Colors.white, fontSize: 16),
+                        border: InputBorder.none
                       ),
                     ),
+                    onPressed: ()
+                    {
+                      Scaffold.of(context).hideCurrentSnackBar();
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("tap"),));
+                    },
                   ),
                 )
             )
@@ -391,22 +452,22 @@ class _TicketTabState extends State<TicketTab>
 
   Widget _buildBody()
   {
-    return Column
+    _postFunctions();
+    return Stack
     (
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>
       [
-        CustomBar("Bilheteria"),
         SingleChildScrollView
         (
+          physics: BouncingScrollPhysics(),
           child: Column
-          (
+            (
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>
             [
-              _postFunctions(),
+              SizedBox(height: 120),
               Container
-              (
+                (
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration
                   (
@@ -422,7 +483,7 @@ class _TicketTabState extends State<TicketTab>
               ),
 
               Container
-              (
+                (
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
                 child: Column
                   (
@@ -438,33 +499,20 @@ class _TicketTabState extends State<TicketTab>
               )
             ],
           ),
-        )
+        ),
+        CustomBar("Bilheteria"),
       ],
     );
   }
 
-  Widget _postFunctions()
+  void _postFunctions()
   {
     setState(()
     {
       itemAmount = adultAmount + kidAmount;
-
-      if(weekday == 6 || weekday == 7)
-      {
-        adultPrice = 58.00;
-        kidPrice = 34.00;
-      }
-      else
-      {
-        adultPrice = 44.00;
-        kidPrice = 28.00;
-      }
-
       totalPrice = (adultPrice*adultAmount) + (kidPrice*kidAmount);
       _valueController.text = totalPrice.toString() + "0";
     });
-
-    return Container();
   }
 
   @override

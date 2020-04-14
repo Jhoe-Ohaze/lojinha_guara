@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 
@@ -29,7 +28,7 @@ class _CustomCalendarState extends State<CustomCalendar>
     super.initState();
 
     _currentDate = DateTime.now().weekday == 2 ? DateTime.now().add(Duration(days: 1)) : DateTime.now();
-    _selectedDate = _currentDate;
+    _selectedDate = null;
 
     weekday = _currentDate.weekday;
   }
@@ -105,7 +104,8 @@ class _CustomCalendarState extends State<CustomCalendar>
       (
         markedDatesMap: _markedDateMap,
         height: 420.0,
-        isScrollable: true,
+        isScrollable: false,
+        customGridViewPhysics: NeverScrollableScrollPhysics(),
         daysHaveCircularBorder: null,
         showOnlyCurrentMonthDate: true,
 

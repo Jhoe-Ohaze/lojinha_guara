@@ -45,7 +45,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
      _screenWidth = MediaQuery.of(context).size.width;
      _screenHeight = MediaQuery.of(context).size.height;
 
-    Widget _createField(label, isEditable, width, limit, isNumeric, isDDD)
+    Widget _createField(String label, double width, int limit, bool isNumeric, bool isDDD, TextEditingController controller)
     {
       return Container
       (
@@ -53,8 +53,8 @@ class _ExcursionScreenState extends State<ExcursionScreen>
         padding: EdgeInsets.all(5),
         child: TextField
         (
+          controller: controller,
           textCapitalization: TextCapitalization.characters,
-          readOnly: !isEditable,
           textAlign: isDDD ? TextAlign.center : TextAlign.left,
           decoration: InputDecoration
           (
@@ -100,7 +100,25 @@ class _ExcursionScreenState extends State<ExcursionScreen>
                     },
                   )
                 ],
-              ); break;
+              );
+
+              case 2:
+                double width = MediaQuery.of(context).size.width;
+                double height = MediaQuery.of(context).size.height;
+
+                return Container
+                (
+                  color: Color(0x11BBBBBB),
+                  width: width,
+                  height: height,
+                  alignment: Alignment.center,
+                  child: SizedBox
+                  (
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(),
+                  )
+                );
 
               default: return null;
             }
@@ -245,6 +263,7 @@ class _ExcursionScreenState extends State<ExcursionScreen>
     {
       void sendData() async
       {
+        setState(() => _showDialog(2));
         QuerySnapshot snapshot = await Firestore.instance.collection('vendedores').orderBy('Nome').getDocuments();
         List<DocumentSnapshot> consultorList = snapshot.documents.toList();
 
@@ -255,17 +274,17 @@ class _ExcursionScreenState extends State<ExcursionScreen>
           int telefone = int.parse(dddController.text + telController.text);
 
           Firestore.instance.collection('excursao').add
-            (
-              {
-                "Numero": telefone,
-                "LigacaoPendente": true,
-                "Vendedor": consultorList.elementAt(0).data["Nome"],
-                "Nome": nome,
-                "Tipo": dropdownValue,
-                "DataSolicitada": _selectedDate,
-                "DataExpedicao": DateTime.now(),
-                "DataLigacao": null,
-              }
+          (
+            {
+              "Numero": telefone,
+              "LigacaoPendente": true,
+              "Vendedor": consultorList.elementAt(0).data["Nome"],
+              "Nome": nome,
+              "Tipo": dropdownValue,
+              "DataSolicitada": _selectedDate,
+              "DataExpedicao": DateTime.now(),
+              "DataLigacao": null,
+            }
           );
 
           nomeController.clear();
@@ -311,10 +330,12 @@ class _ExcursionScreenState extends State<ExcursionScreen>
           nomeController.clear();
           dddController.clear();
           telController.clear();
+          FocusScope.of(context).requestFocus(FocusNode());
         }
 
         setState(()
         {
+          Navigator.of(context).pop();
           Scaffold.of(context).hideCurrentSnackBar();
           Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
         });
@@ -382,30 +403,34 @@ class _ExcursionScreenState extends State<ExcursionScreen>
           Container
             (
             margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-            child: Column
-              (
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>
-              [
-                _createField("Nome", true, _screenWidth, 100, false, false),
-                Row
-                  (
-                  children: <Widget>
-                  [
-                    _createField("DDD", true, 70.0, 2, true, true),
-                    _createField("Telefone", true, _screenWidth-80, 9, true, false),
-                  ],
-                ),
-                Row
-                  (
-                  children: <Widget>
-                  [
-                    _buildDatePicker(),
-                    _buildTypePicker()
-                  ],
-                ),
-              ],
-            ),
+            child: SingleChildScrollView
+            (
+              physics: BouncingScrollPhysics(),
+              child: Column
+                (
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>
+                [
+                  _createField("Nome", _screenWidth, 100, false, false, nomeController),
+                  Row
+                    (
+                    children: <Widget>
+                    [
+                      _createField("DDD", 70.0, 2, true, true, dddController),
+                      _createField("Telefone", _screenWidth-80, 9, true, false, telController),
+                    ],
+                  ),
+                  Row
+                    (
+                    children: <Widget>
+                    [
+                      _buildDatePicker(),
+                      _buildTypePicker()
+                    ],
+                  ),
+                ],
+              ),
+            )
           ),
           Expanded(child: Container()),
           _buildSendButton(),
