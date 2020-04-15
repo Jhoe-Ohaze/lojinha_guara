@@ -14,10 +14,7 @@ class MyApp extends StatelessWidget
     return MaterialApp
     (
       title: 'Guarapp',
-      theme: ThemeData
-      (
-        primarySwatch: Colors.blue
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       debugShowCheckedModeBanner: false,
       home: MainScreen(),
     );

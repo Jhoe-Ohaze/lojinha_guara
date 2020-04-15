@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lojinha_guara/my_assets/color_assets.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
 import 'package:lojinha_guara/widgets/custom_bar.dart';
 
@@ -17,6 +18,11 @@ class _SocietyScreenState extends State<SocietyScreen>
   final telController = TextEditingController();
   final cpfController = TextEditingController();
 
+  Color primColor = ColorAssets.primaryColor;
+  Color secoColor = ColorAssets.secondaryColor;
+  Color contColor = ColorAssets.contentColor;
+  Color inacColor = ColorAssets.inactiveColor;
+
   void _showDialog(int option)
   {
     showDialog
@@ -32,7 +38,7 @@ class _SocietyScreenState extends State<SocietyScreen>
 
               return Container
                 (
-                  color: Color(0x11BBBBBB),
+                  color: inacColor,
                   width: width,
                   height: height,
                   alignment: Alignment.center,
@@ -61,7 +67,6 @@ class _SocietyScreenState extends State<SocietyScreen>
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         textCapitalization: TextCapitalization.characters,
         textAlign: isDDD ? TextAlign.center : TextAlign.left,
-        onChanged: (text){print(_controller.text);},
         decoration: InputDecoration
         (
           labelText: label,
@@ -89,134 +94,109 @@ class _SocietyScreenState extends State<SocietyScreen>
     void sendData() async
     {
       _showDialog(2);
-      QuerySnapshot snapshot = await Firestore.instance.collection('consultores').orderBy('Nome').getDocuments();
-      List<DocumentSnapshot> consultorList = snapshot.documents.toList();
-
-      snapshot = await Firestore.instance.collection('sociedade').orderBy('DataExpedicao', descending: true).limit(1).getDocuments();
-      if(snapshot.documents.length == 0)
+      try
       {
-        String nome = nomeController.text;
-        int telefone = int.parse(dddController.text + telController.text);
-        int cpf = int.parse(cpfController.text);
+        QuerySnapshot snapshot = await Firestore.instance.collection('consultores').orderBy('Nome').getDocuments();
+        List<DocumentSnapshot> consultorList = snapshot.documents.toList();
 
-        Firestore.instance.collection('sociedade').add
-          (
-            {
-              "Numero": telefone,
-              "LigacaoPendente": true,
-              "Consultor": consultorList.elementAt(0).data["Nome"],
-              "Nome": nome,
-              "CPF": cpf,
-              "DataExpedicao": DateTime.now(),
-              "DataLigacao": null,
-            }
-        );
-
-        nomeController.clear();
-        dddController.clear();
-        telController.clear();
-        cpfController.clear();
-      }
-      else
-      {
-        DocumentSnapshot lastDocument = snapshot.documents.elementAt(0);
-
-        String lastCons = lastDocument.data['Consultor'];
-        String nextCons = "";
-        int count = 0;
-        for(DocumentSnapshot doc in consultorList)
+        snapshot = await Firestore.instance.collection('sociedade').orderBy('DataExpedicao', descending: true).limit(1).getDocuments();
+        if(snapshot.documents.length == 0)
         {
-          count++;
-          if(lastCons == doc.data['Nome'])
+          String nome = nomeController.text;
+          int telefone = int.parse(dddController.text + telController.text);
+          int cpf = int.parse(cpfController.text);
+
+          Firestore.instance.collection('sociedade').add
+            (
+              {
+                "Numero": telefone,
+                "LigacaoPendente": true,
+                "Consultor": consultorList.elementAt(0).data["Nome"],
+                "Nome": nome,
+                "CPF": cpf,
+                "DataExpedicao": DateTime.now(),
+                "DataLigacao": null,
+              }
+          );
+
+          nomeController.clear();
+          dddController.clear();
+          telController.clear();
+          cpfController.clear();
+        }
+        else
+        {
+          DocumentSnapshot lastDocument = snapshot.documents.elementAt(0);
+
+          String lastCons = lastDocument.data['Consultor'];
+          String nextCons = "";
+          int count = 0;
+          for(DocumentSnapshot doc in consultorList)
           {
-            if(count >= consultorList.length)
-              nextCons = consultorList.elementAt(0).data['Nome'];
-            else
-              nextCons = consultorList.elementAt(count).data['Nome'];
+            count++;
+            if(lastCons == doc.data['Nome'])
+            {
+              if(count >= consultorList.length)
+                nextCons = consultorList.elementAt(0).data['Nome'];
+              else
+                nextCons = consultorList.elementAt(count).data['Nome'];
+            }
           }
+
+          String nome = nomeController.text;
+          int telefone = int.parse(dddController.text + telController.text);
+          int cpf = int.parse(cpfController.text);
+
+          Firestore.instance.collection('sociedade').add
+            (
+              {
+                "Numero": telefone,
+                "LigacaoPendente": true,
+                "Consultor": nextCons,
+                "Nome": nome,
+                "CPF": cpf,
+                "DataExpedicao": DateTime.now(),
+                "DataLigacao": null,
+              }
+          );
+
+          nomeController.clear();
+          dddController.clear();
+          telController.clear();
+          cpfController.clear();
         }
 
-        String nome = nomeController.text;
-        int telefone = int.parse(dddController.text + telController.text);
-        int cpf = int.parse(cpfController.text);
-
-        Firestore.instance.collection('sociedade').add
-          (
-            {
-              "Numero": telefone,
-              "LigacaoPendente": true,
-              "Consultor": nextCons,
-              "Nome": nome,
-              "CPF": cpf,
-              "DataExpedicao": DateTime.now(),
-              "DataLigacao": null,
-            }
-        );
-
-        nomeController.clear();
-        dddController.clear();
-        telController.clear();
-        cpfController.clear();
-        FocusScope.of(context).requestFocus(FocusNode());
+        setState(()
+        {
+          FocusScope.of(context).requestFocus(FocusNode());
+          Navigator.of(context).pop();
+          Scaffold.of(context).hideCurrentSnackBar();
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
+        });
       }
-
-      setState(()
+      catch(e)
       {
-        Navigator.of(context).pop();
-        Scaffold.of(context).hideCurrentSnackBar();
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
-      });
+        setState(()
+        {
+          FocusScope.of(context).requestFocus(FocusNode());
+          Navigator.of(context).pop();
+          Scaffold.of(context).hideCurrentSnackBar();
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Erro ao enviar solicitação")));
+        });
+      }
     }
 
-    return SizedBox
+    return Container
     (
-      height: MediaQuery.of(context).size.height*0.15,
-      width: _screenWidth,
-      child: Stack
+      margin: EdgeInsets.all(5),
+      height: 52,
+      child: MaterialButton
       (
-        alignment: Alignment.center,
-        children: <Widget>
-        [
-          Container
-          (
-            height: double.infinity,
-            child: ImageAssets.sendButtonImage
-          ),
-          Container
-          (
-            alignment: Alignment.center,
-            width: _screenWidth*0.5,
-            height: double.infinity,
-            decoration: BoxDecoration
-            (
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(180), topRight: Radius.circular(180))
-            ),
-            child: MaterialButton
-            (
-              shape: RoundedRectangleBorder
-              (
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
-              ),
-              onPressed: sendData,
-              child: Container
-              (
-                alignment: Alignment.center,
-                width: double.infinity,
-                height: double.infinity,
-                child: Text
-                (
-                  "Solicitar",
-                  style: TextStyle
-                  (
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: secoColor,
+        child: Text("Enviar", style: TextStyle(color: contColor)),
+        onPressed: sendData,
       ),
     );
   }
@@ -264,10 +244,14 @@ class _SocietyScreenState extends State<SocietyScreen>
                               _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
                             ],
                           ),
+                          Row
+                          (
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[_buildSendButton()],
+                          )
                         ],
                       ),
                     ),
-                    _buildSendButton()
                   ],
                 ),
               ),

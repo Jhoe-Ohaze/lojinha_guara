@@ -15,7 +15,9 @@ class MainScreen extends StatefulWidget
 class MainScreenState extends State<MainScreen>
 {
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  FirebaseUser _user;
+  FirebaseUser _currentUser;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _currentWidget;
   int _currentPage = 0;
@@ -27,7 +29,7 @@ class MainScreenState extends State<MainScreen>
     _currentWidget = HomeTab(setCurrentWidget);
     FirebaseAuth.instance.onAuthStateChanged.listen((user)
     {
-      _user = user;
+      _currentUser = user;
     });
   }
 
@@ -38,41 +40,31 @@ class MainScreenState extends State<MainScreen>
 
   Future<FirebaseUser> getUser() async
   {
-    if(_user != null) return _user;
-    try
-    {
-      final GoogleSignInAccount googleSignInAccount =
-        await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+    if(_currentUser != null) return _currentUser;
+    final GoogleSignInAccount googleSignInAccount =
+    await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+    await googleSignInAccount.authentication;
 
-      final AuthCredential authCredential = GoogleAuthProvider.getCredential
-        (
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken
-      );
+    final AuthCredential authCredential  = GoogleAuthProvider.getCredential
+      (
+      idToken: googleSignInAuthentication.idToken,
+      accessToken: googleSignInAuthentication.accessToken,
+    );
 
-      final AuthResult authResult = await FirebaseAuth.instance.signInWithCredential(authCredential);
-      final FirebaseUser user = authResult.user;
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text("OK"),));
-      return user;
-    }
-
-    catch(error){return null;}
+    final AuthResult authResult =
+    await FirebaseAuth.instance.signInWithCredential(authCredential);
+    final FirebaseUser user = authResult.user;
+    return user;
   }
 
   void _logOut()
   {
     FirebaseAuth.instance.signOut();
     googleSignIn.signOut();
-  }
-
-  void _setUser() async
-  {
-    final FirebaseUser user = await getUser();
     setState(()
     {
-      this._user = user;
+      _currentUser = null;
     });
   }
 
@@ -88,6 +80,23 @@ class MainScreenState extends State<MainScreen>
   @override
   Widget build(BuildContext context)
   {
+    void _setUser() async
+    {
+      try
+      {
+        final FirebaseUser user = await getUser();
+        setState(()
+        {
+          _currentUser = user;
+        });
+      }
+      catch(e)
+      {
+        _scaffoldKey.currentState.hideCurrentSnackBar();
+        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Não foi possível logar")));
+      }
+    }
+
     Widget _buildBody()
     {
       return AnimatedSwitcher
@@ -99,8 +108,8 @@ class MainScreenState extends State<MainScreen>
 
     return Scaffold
     (
-      resizeToAvoidBottomInset: false,
-      drawer: CustomDrawer(setCurrentWidget, _getPage, _setUser, _logOut),
+      key: _scaffoldKey,
+      drawer: CustomDrawer(setCurrentWidget, _getPage, _setUser, _logOut, _currentUser),
       body: _buildBody(),
     );
   }

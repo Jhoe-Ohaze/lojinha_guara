@@ -33,7 +33,7 @@ class _CustomCalendarState extends State<CustomCalendar>
     weekday = _currentDate.weekday;
   }
 
-  Widget CalendarBuilder()
+  Widget _calendarBuilder()
   {
     EventList<Event> _markedDateMap = new EventList<Event>
     (
@@ -176,6 +176,6 @@ class _CustomCalendarState extends State<CustomCalendar>
   @override
   Widget build(BuildContext context)
   {
-    return CalendarBuilder();
+    return _calendarBuilder();
   }
 }

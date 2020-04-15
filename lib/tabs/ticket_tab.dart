@@ -20,6 +20,7 @@ class _TicketTabState extends State<TicketTab>
   TextEditingController _dateController;
   TextEditingController _valueController;
 
+
   int itemAmount = 0;
   int adultAmount = 0;
   int kidAmount = 0;
@@ -64,9 +65,9 @@ class _TicketTabState extends State<TicketTab>
       for(DocumentSnapshot doc in priceList)
       {
         if(doc.data['Nome'] == "Adulto FDS")
-          adultPrice = double.parse(doc.data['Valor']);
+          adultPrice = doc.data['Valor'] + 0.00;
         if(doc.data['Nome'] == "Criança FDS")
-          kidPrice = double.parse(doc.data['Valor']);
+          kidPrice = doc.data['Valor'] + 0.00;
       }
     }
     else
@@ -74,9 +75,9 @@ class _TicketTabState extends State<TicketTab>
       for(DocumentSnapshot doc in priceList)
       {
         if(doc.data['Nome'] == "Adulto Semana")
-          adultPrice = double.parse(doc.data['Valor']);
+          adultPrice = doc.data['Valor'] + 0.00;
         if(doc.data['Nome'] == "Criança Semana")
-         kidPrice = double.parse(doc.data['Valor']);
+         kidPrice = doc.data['Valor'] + 0.00;
       }
     }
   }
@@ -192,6 +193,7 @@ class _TicketTabState extends State<TicketTab>
                         amount--;
                         isAdult ? adultAmount-- : kidAmount--;
                         numberController.text = amount.toString();
+                        _postFunctions();
                       }
                     });
                   },
@@ -202,7 +204,6 @@ class _TicketTabState extends State<TicketTab>
                   width: 60,
                   child: TextField
                   (
-                    readOnly: true,
                     cursorColor: Color(0x00ffffff),
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.numberWithOptions(),
@@ -228,6 +229,7 @@ class _TicketTabState extends State<TicketTab>
                         amount++;
                         isAdult ? adultAmount++ : kidAmount++;
                         numberController.text = amount.toString();
+                        _postFunctions();
                       }
                       else
                       {
@@ -268,9 +270,9 @@ class _TicketTabState extends State<TicketTab>
 
       if(selectedDate != null)
       {
+        int auxWeekday = weekday;
         setState(()
         {
-          int auxWeekday = weekday;
           weekday = selectedDate.weekday;
           if(weekday != 2)
           {
@@ -290,9 +292,9 @@ class _TicketTabState extends State<TicketTab>
           for(DocumentSnapshot doc in priceList)
           {
             if(doc.data['Nome'] == "Adulto FDS")
-              adultPrice = doc.data['Valor'];
+              adultPrice = doc.data['Valor'] + 0.00;
             if(doc.data['Nome'] == "Criança FDS")
-              kidPrice = doc.data['Valor'];
+              kidPrice = doc.data['Valor'] + 0.00;
           }
         }
         else
@@ -300,13 +302,13 @@ class _TicketTabState extends State<TicketTab>
           for(DocumentSnapshot doc in priceList)
           {
             if(doc.data['Nome'] == "Adulto Semana")
-              adultPrice = doc.data['Valor'];
+              adultPrice = doc.data['Valor'] + 0.00;
             if(doc.data['Nome'] == "Criança FDS")
-              kidPrice = doc.data['Valor'];
+              kidPrice = doc.data['Valor'] + 0.00;
           }
         }
       }
-    };
+    }
 
     return GestureDetector
     (
@@ -339,10 +341,7 @@ class _TicketTabState extends State<TicketTab>
                     child: TextField
                     (
                       enabled: false,
-                      readOnly: true,
-                      cursorColor: Color(0x00ffffff),
                       textAlign: TextAlign.center,
-                      keyboardType: TextInputType.numberWithOptions(),
                       controller: _dateController,
                       decoration: InputDecoration
                         (
@@ -397,8 +396,7 @@ class _TicketTabState extends State<TicketTab>
                     width: 90,
                     child: TextField
                       (
-                      readOnly: true,
-                      cursorColor: Color(0x00ffffff),
+                      enabled: false,
                       textAlign: TextAlign.end,
                       keyboardType: TextInputType.numberWithOptions(),
                       controller: _valueController,
@@ -452,7 +450,6 @@ class _TicketTabState extends State<TicketTab>
 
   Widget _buildBody()
   {
-    _postFunctions();
     return Stack
     (
       children: <Widget>

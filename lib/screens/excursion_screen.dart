@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:lojinha_guara/my_assets/image_assets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lojinha_guara/widgets/custom_bar.dart';
 
 class ExcursionScreen extends StatefulWidget
 {
@@ -17,9 +17,9 @@ class _ExcursionScreenState extends State<ExcursionScreen>
   double _screenHeight;
   DateTime _currentDate;
   DateTime _selectedDate;
-  TextEditingController _dateController;
   String dropdownValue = "Aniversário";
 
+  TextEditingController _dateController;
   final nomeController = TextEditingController();
   final dddController = TextEditingController();
   final telController = TextEditingController();
@@ -264,153 +264,130 @@ class _ExcursionScreenState extends State<ExcursionScreen>
       void sendData() async
       {
         setState(() => _showDialog(2));
-        QuerySnapshot snapshot = await Firestore.instance.collection('vendedores').orderBy('Nome').getDocuments();
-        List<DocumentSnapshot> consultorList = snapshot.documents.toList();
 
-        snapshot = await Firestore.instance.collection('excursao').orderBy('DataExpedicao', descending: true).limit(1).getDocuments();
-        if(snapshot.documents.length == 0)
+        try
         {
-          String nome = nomeController.text;
-          int telefone = int.parse(dddController.text + telController.text);
+          QuerySnapshot snapshot = await Firestore.instance.collection('vendedores').orderBy('Nome').getDocuments();
+          List<DocumentSnapshot> consultorList = snapshot.documents.toList();
 
-          Firestore.instance.collection('excursao').add
-          (
-            {
-              "Numero": telefone,
-              "LigacaoPendente": true,
-              "Vendedor": consultorList.elementAt(0).data["Nome"],
-              "Nome": nome,
-              "Tipo": dropdownValue,
-              "DataSolicitada": _selectedDate,
-              "DataExpedicao": DateTime.now(),
-              "DataLigacao": null,
-            }
-          );
-
-          nomeController.clear();
-          dddController.clear();
-          telController.clear();
-        }
-        else
-        {
-          DocumentSnapshot lastDocument = snapshot.documents.elementAt(0);
-
-          String lastCons = lastDocument.data['Vendedor'];
-          String nextCons = "";
-          int count = 0;
-          for(DocumentSnapshot doc in consultorList)
+          snapshot = await Firestore.instance.collection('excursao').orderBy('DataExpedicao', descending: true).limit(1).getDocuments();
+          if(snapshot.documents.length == 0)
           {
-            count++;
-            if(lastCons == doc.data['Nome'])
-            {
-              if(count >= consultorList.length)
-                nextCons = consultorList.elementAt(0).data['Nome'];
-              else
-                nextCons = consultorList.elementAt(count).data['Nome'];
-            }
+            String nome = nomeController.text;
+            int telefone = int.parse(dddController.text + telController.text);
+
+            Firestore.instance.collection('excursao').add
+              (
+                {
+                  "Numero": telefone,
+                  "LigacaoPendente": true,
+                  "Vendedor": consultorList.elementAt(0).data["Nome"],
+                  "Nome": nome,
+                  "Tipo": dropdownValue,
+                  "DataSolicitada": _selectedDate,
+                  "DataExpedicao": DateTime.now(),
+                  "DataLigacao": null,
+                }
+            );
+
+            nomeController.clear();
+            dddController.clear();
+            telController.clear();
           }
+          else
+          {
+            DocumentSnapshot lastDocument = snapshot.documents.elementAt(0);
 
-          String nome = nomeController.text;
-          int telefone = int.parse(dddController.text + telController.text);
-
-          Firestore.instance.collection('excursao').add
-            (
+            String lastCons = lastDocument.data['Vendedor'];
+            String nextCons = "";
+            int count = 0;
+            for(DocumentSnapshot doc in consultorList)
+            {
+              count++;
+              if(lastCons == doc.data['Nome'])
               {
-                "Numero": telefone,
-                "LigacaoPendente": true,
-                "Vendedor": nextCons,
-                "Tipo": dropdownValue,
-                "Nome": nome,
-                "DataSolicitada": _selectedDate,
-                "DataExpedicao": DateTime.now(),
-                "DataLigacao": null,
+                if(count >= consultorList.length)
+                  nextCons = consultorList.elementAt(0).data['Nome'];
+                else
+                  nextCons = consultorList.elementAt(count).data['Nome'];
               }
-          );
+            }
 
-          nomeController.clear();
-          dddController.clear();
-          telController.clear();
-          FocusScope.of(context).requestFocus(FocusNode());
+            String nome = nomeController.text;
+            int telefone = int.parse(dddController.text + telController.text);
+
+            Firestore.instance.collection('excursao').add
+              (
+                {
+                  "Numero": telefone,
+                  "LigacaoPendente": true,
+                  "Vendedor": nextCons,
+                  "Tipo": dropdownValue,
+                  "Nome": nome,
+                  "DataSolicitada": _selectedDate,
+                  "DataExpedicao": DateTime.now(),
+                  "DataLigacao": null,
+                }
+            );
+
+            nomeController.clear();
+            dddController.clear();
+            telController.clear();
+          }
+          setState(()
+          {
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.of(context).pop();
+            Scaffold.of(context).hideCurrentSnackBar();
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
+          });
         }
-
-        setState(()
+        catch(e)
         {
-          Navigator.of(context).pop();
-          Scaffold.of(context).hideCurrentSnackBar();
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
-        });
+          setState(()
+          {
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.of(context).pop();
+            Scaffold.of(context).hideCurrentSnackBar();
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Erro ao Enviar Solicitação")));
+          });
+          return null;
+        }
       }
 
-      return SizedBox
+      return Container
       (
-        height: MediaQuery.of(context).size.height*0.15,
-        width: _screenWidth,
-        child: Stack
+        margin: EdgeInsets.all(5),
+        height: 52,
+        child: MaterialButton
         (
-          alignment: Alignment.center,
-          children: <Widget>
-          [
-            Container
-            (
-              height: double.infinity,
-              child: ImageAssets.sendButtonImage,
-            ),
-            Container
-            (
-              decoration: BoxDecoration
-              (
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(180), topRight: Radius.circular(180))
-              ),
-              alignment: Alignment.center,
-              width: _screenWidth*0.5,
-              height: double.infinity,
-              child: MaterialButton
-              (
-                shape: RoundedRectangleBorder
-                (
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(250), topRight: Radius.circular(250))
-                ),
-                onPressed: sendData,
-                child: Container
-                  (
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Text
-                  (
-                    "Solicitar",
-                    style: TextStyle
-                      (
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          color: Colors.redAccent,
+          child: Text("Enviar", style: TextStyle(color: Colors.white)),
+          onPressed: sendData,
+        )
       );
     }
 
     Widget _buildBody()
     {
-      return Column
-        (
+      return Stack
+      (
         children: <Widget>
         [
-          Container
+          SingleChildScrollView
             (
-            margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-            child: SingleChildScrollView
-            (
-              physics: BouncingScrollPhysics(),
+            physics: BouncingScrollPhysics(),
+            child: Container
+              (
+              margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
               child: Column
                 (
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>
                 [
+                  SizedBox(height: 120),
                   _createField("Nome", _screenWidth, 100, false, false, nomeController),
                   Row
                     (
@@ -428,21 +405,25 @@ class _ExcursionScreenState extends State<ExcursionScreen>
                       _buildTypePicker()
                     ],
                   ),
+                  Row
+                  (
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[_buildSendButton()],
+                  )
                 ],
               ),
-            )
+            ),
           ),
-          Expanded(child: Container()),
-          _buildSendButton(),
+          CustomBar("Excursões")
         ],
       );
     }
 
     return SizedBox
-      (
-        height: _screenHeight,
-        width: _screenWidth,
-        child: _buildBody()
+    (
+      height: _screenHeight,
+      width: _screenWidth,
+      child: _buildBody()
     );
   }
 }
