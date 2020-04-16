@@ -17,6 +17,7 @@ class CustomDrawer extends StatefulWidget
   final Function _getPage;
   final Function _setUser;
   final Function _logOut;
+  final FirebaseUser _currentUser;
 
   CustomDrawer
   (
@@ -24,10 +25,11 @@ class CustomDrawer extends StatefulWidget
     this._getPage,
     this._setUser,
     this._logOut,
+    this._currentUser
   );
 
   @override
-  _CustomDrawerState createState() => _CustomDrawerState(_setWidget, _getPage, _setUser, _logOut);
+  _CustomDrawerState createState() => _CustomDrawerState(_setWidget, _getPage, _setUser, _logOut, _currentUser);
 }
 
 class _CustomDrawerState extends State<CustomDrawer>
@@ -36,7 +38,7 @@ class _CustomDrawerState extends State<CustomDrawer>
   final Function _getPage;
   final Function _setUser;
   final Function _logOut;
-  FirebaseUser _user;
+  final FirebaseUser _user;
 
   _CustomDrawerState
   (
@@ -44,18 +46,13 @@ class _CustomDrawerState extends State<CustomDrawer>
     this._getPage,
     this._setUser,
     this._logOut,
+    this._user,
   );
 
   @override
   void initState()
   {
     super.initState();
-    initUser();
-  }
-
-  void initUser() async
-  {
-    await FirebaseAuth.instance.currentUser();
   }
 
   @override
@@ -97,7 +94,7 @@ class _CustomDrawerState extends State<CustomDrawer>
               Divider(color: Colors.grey[300], thickness: 1, height: 2),
               Padding(padding: EdgeInsets.only(top: 5)),
 
-              LogInTile(_setUser, _user),
+              LogInTile(_setUser),
               Divider(color: Colors.grey[300], thickness: 1),
 
               DrawerTile(Icons.home, "Início", HomeTab(_setWidget), _setWidget, _getPage, 0),
@@ -108,8 +105,8 @@ class _CustomDrawerState extends State<CustomDrawer>
               DrawerTile(Icons.person, "Sociedade", SocietyTab(), _setWidget, _getPage, 3),
 
               Divider(color: Colors.grey[300], thickness: 1),
-              ExitTile(_logOut),
-              _user == null ? Container() : Divider()
+              _user == null ? Container() : ExitTile(_logOut),
+              _user == null ? Container() : Divider(color: Colors.grey[300], thickness: 1)
             ],
           )
         ],

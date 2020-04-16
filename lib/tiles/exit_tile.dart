@@ -20,6 +20,8 @@ class ExitTile extends StatelessWidget
         {
           Navigator.of(context).pop();
           _logOut();
+          Scaffold.of(context).hideCurrentSnackBar();
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Deslogado com Sucesso')));
         },
         child: Container
         (

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lojinha_guara/screens/main_screen.dart';
 
 class DrawerTile extends StatelessWidget
 {
@@ -60,7 +59,7 @@ class DrawerTile extends StatelessWidget
                 style: TextStyle
                 (
                   fontSize: 16.0,
-                  color: _currentPage == page ? blue : Colors.grey[700]
+                  color: pageID == page ? blue : Colors.grey[700]
                 ),
               )
             ],

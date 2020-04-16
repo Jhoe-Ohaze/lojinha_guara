@@ -64,9 +64,9 @@ class _TicketTabState extends State<TicketTab>
       for(DocumentSnapshot doc in priceList)
       {
         if(doc.data['Nome'] == "Adulto FDS")
-          adultPrice = double.parse(doc.data['Valor']);
+          adultPrice = doc.data['Valor'] + 0.00;
         if(doc.data['Nome'] == "Criança FDS")
-          kidPrice = double.parse(doc.data['Valor']);
+          kidPrice = doc.data['Valor'] + 0.00;
       }
     }
     else
@@ -74,9 +74,9 @@ class _TicketTabState extends State<TicketTab>
       for(DocumentSnapshot doc in priceList)
       {
         if(doc.data['Nome'] == "Adulto Semana")
-          adultPrice = double.parse(doc.data['Valor']);
+          adultPrice = doc.data['Valor'] + 0.00;
         if(doc.data['Nome'] == "Criança Semana")
-         kidPrice = double.parse(doc.data['Valor']);
+         kidPrice = doc.data['Valor'] + 0.00;
       }
     }
   }
@@ -192,6 +192,7 @@ class _TicketTabState extends State<TicketTab>
                         amount--;
                         isAdult ? adultAmount-- : kidAmount--;
                         numberController.text = amount.toString();
+                        _postFunctions();
                       }
                     });
                   },
@@ -202,7 +203,6 @@ class _TicketTabState extends State<TicketTab>
                   width: 60,
                   child: TextField
                   (
-                    readOnly: true,
                     cursorColor: Color(0x00ffffff),
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.numberWithOptions(),
@@ -228,6 +228,7 @@ class _TicketTabState extends State<TicketTab>
                         amount++;
                         isAdult ? adultAmount++ : kidAmount++;
                         numberController.text = amount.toString();
+                        _postFunctions();
                       }
                       else
                       {
@@ -268,9 +269,9 @@ class _TicketTabState extends State<TicketTab>
 
       if(selectedDate != null)
       {
+        int auxWeekday = weekday;
         setState(()
         {
-          int auxWeekday = weekday;
           weekday = selectedDate.weekday;
           if(weekday != 2)
           {
@@ -290,9 +291,9 @@ class _TicketTabState extends State<TicketTab>
           for(DocumentSnapshot doc in priceList)
           {
             if(doc.data['Nome'] == "Adulto FDS")
-              adultPrice = doc.data['Valor'];
+              adultPrice = doc.data['Valor'] + 0.00;
             if(doc.data['Nome'] == "Criança FDS")
-              kidPrice = doc.data['Valor'];
+              kidPrice = doc.data['Valor'] + 0.00;
           }
         }
         else
@@ -300,13 +301,13 @@ class _TicketTabState extends State<TicketTab>
           for(DocumentSnapshot doc in priceList)
           {
             if(doc.data['Nome'] == "Adulto Semana")
-              adultPrice = doc.data['Valor'];
+              adultPrice = doc.data['Valor'] + 0.00;
             if(doc.data['Nome'] == "Criança FDS")
-              kidPrice = doc.data['Valor'];
+              kidPrice = doc.data['Valor'] + 0.00;
           }
         }
       }
-    };
+    }
 
     return GestureDetector
     (
@@ -339,10 +340,7 @@ class _TicketTabState extends State<TicketTab>
                     child: TextField
                     (
                       enabled: false,
-                      readOnly: true,
-                      cursorColor: Color(0x00ffffff),
                       textAlign: TextAlign.center,
-                      keyboardType: TextInputType.numberWithOptions(),
                       controller: _dateController,
                       decoration: InputDecoration
                         (
@@ -397,8 +395,7 @@ class _TicketTabState extends State<TicketTab>
                     width: 90,
                     child: TextField
                       (
-                      readOnly: true,
-                      cursorColor: Color(0x00ffffff),
+                      enabled: false,
                       textAlign: TextAlign.end,
                       keyboardType: TextInputType.numberWithOptions(),
                       controller: _valueController,
@@ -452,7 +449,6 @@ class _TicketTabState extends State<TicketTab>
 
   Widget _buildBody()
   {
-    _postFunctions();
     return Stack
     (
       children: <Widget>
@@ -460,44 +456,47 @@ class _TicketTabState extends State<TicketTab>
         SingleChildScrollView
         (
           physics: BouncingScrollPhysics(),
-          child: Column
-            (
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>
-            [
-              SizedBox(height: 120),
-              Container
-                (
-                margin: EdgeInsets.all(10),
-                decoration: BoxDecoration
+          child: Container
+          (
+            child: Column
+              (
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>
+              [
+                SizedBox(height: 120),
+                Container
                   (
-                    border: Border.all(width: 2, color: Colors.grey[700]),
-                    borderRadius: BorderRadius.circular(8)
-                ),
-                child: ClipRRect
-                  (
+                  margin: EdgeInsets.all(10),
+                  decoration: BoxDecoration
+                    (
+                      border: Border.all(width: 2, color: Colors.grey[700]),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: ClipRRect
+                    (
 
-                  borderRadius: BorderRadius.circular(5),
-                  child: ImageAssets.ticketImage,
+                    borderRadius: BorderRadius.circular(5),
+                    child: ImageAssets.ticketImage,
+                  ),
                 ),
-              ),
 
-              Container
-                (
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-                child: Column
+                Container
                   (
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>
-                  [
-                    _buildDatePicker(),
-                    _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
-                    _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-                    _buildPriceAndButton(),
-                  ],
-                ),
-              )
-            ],
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+                  child: Column
+                    (
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>
+                    [
+                      _buildDatePicker(),
+                      _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+                      _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+                      _buildPriceAndButton(),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         CustomBar("Bilheteria"),
@@ -518,6 +517,14 @@ class _TicketTabState extends State<TicketTab>
   @override
   Widget build(BuildContext context)
   {
-    return _buildBody();
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    return Container
+    (
+      height: _screenHeight,
+      width: _screenWidth,
+      child: _buildBody()
+    );
   }
 }
