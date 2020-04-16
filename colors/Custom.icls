@@ -1,10 +1,10 @@
-<scheme name="_@user_High сontrast" version="142" parent_scheme="Darcula">
+<scheme name="Custom" version="142" parent_scheme="Darcula">
   <metaInfo>
-    <property name="created">2020-03-06T09:10:36</property>
+    <property name="created">2020-04-16T16:04:18</property>
     <property name="ide">AndroidStudio</property>
     <property name="ideVersion">3.5.3.0</property>
-    <property name="modified">2020-04-16T15:38:28</property>
-    <property name="originalScheme">High сontrast</property>
+    <property name="modified">2020-04-16T16:06:57</property>
+    <property name="originalScheme">_@user_High сontrast</property>
   </metaInfo>
   <colors>
     <option name="ADDED_LINES_COLOR" value="9924" />
@@ -33,7 +33,7 @@
     <option name="FILESTATUS_modifiedOutside" value="4ff0ff" />
     <option name="FOLDED_TEXT_BORDER_COLOR" value="b3b3b3" />
     <option name="GUTTER_BACKGROUND" value="131314" />
-    <option name="INDENT_GUIDE" value="666666" />
+    <option name="INDENT_GUIDE" value="1e2526" />
     <option name="INFORMATION_HINT" value="450073" />
     <option name="LINE_NUMBERS_COLOR" value="999999" />
     <option name="LINE_NUMBER_ON_CARET_ROW_COLOR" value="ffffff" />
@@ -45,7 +45,7 @@
     <option name="RECURSIVE_CALL_ATTRIBUTES" value="b4c738" />
     <option name="RIGHT_MARGIN_COLOR" value="808080" />
     <option name="SELECTED_INDENT_GUIDE" value="999999" />
-    <option name="SELECTED_TEARLINE_COLOR" value="ffffff" />
+    <option name="SELECTED_TEARLINE_COLOR" value="a0e2ff" />
     <option name="SELECTION_BACKGROUND" value="6280" />
     <option name="SEPARATOR_BELOW_COLOR" value="808080" />
     <option name="SOFT_WRAP_SIGN_COLOR" value="ffffff" />
