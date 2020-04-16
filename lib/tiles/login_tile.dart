@@ -23,10 +23,38 @@ class _LogInTileState extends State<LogInTile>
         (
         children: <Widget>
         [
-          Text("Entre ou Registre-se"),
-          Icon(Icons.chevron_right, color: Colors.grey[300])
+          Text("Entre ou Registre-se", style: TextStyle(fontSize: 15),),
+          Expanded(child: Container(),),
+          Icon(Icons.chevron_right, color: Colors.blueAccent)
         ],
       ),
+    );
+  }
+
+  void _showLoading()
+  {
+    showDialog
+      (
+        context: context,
+        builder: (context)
+        {
+          double width = MediaQuery.of(context).size.width;
+          double height = MediaQuery.of(context).size.height;
+
+          return Container
+            (
+              color: Colors.black26,
+              width: width,
+              height: height,
+              alignment: Alignment.center,
+              child: SizedBox
+                (
+                width: 50,
+                height: 50,
+                child: CircularProgressIndicator(),
+              )
+          );
+        }
     );
   }
 
@@ -38,10 +66,12 @@ class _LogInTileState extends State<LogInTile>
       color: Colors.transparent,
       child: InkWell
       (
-        onTap: ()
+        onTap: () async
         {
           Navigator.of(context).pop();
+          _showLoading();
           _setUser();
+          Navigator.of(context).pop();
         },
         child: Container
         (

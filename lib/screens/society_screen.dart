@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lojinha_guara/my_assets/color_assets.dart';
-import 'package:lojinha_guara/my_assets/image_assets.dart';
 import 'package:lojinha_guara/widgets/custom_bar.dart';
 
 class SocietyScreen extends StatefulWidget 
@@ -18,40 +16,29 @@ class _SocietyScreenState extends State<SocietyScreen>
   final telController = TextEditingController();
   final cpfController = TextEditingController();
 
-  Color primColor = ColorAssets.primaryColor;
-  Color secoColor = ColorAssets.secondaryColor;
-  Color contColor = ColorAssets.contentColor;
-  Color inacColor = ColorAssets.inactiveColor;
-
-  void _showDialog(int option)
+  void _showLoading()
   {
     showDialog
       (
         context: context,
         builder: (context)
         {
-          switch(option)
-          {
-            case 2:
-              double width = MediaQuery.of(context).size.width;
-              double height = MediaQuery.of(context).size.height;
+          double width = MediaQuery.of(context).size.width;
+          double height = MediaQuery.of(context).size.height;
 
-              return Container
+          return Container
+            (
+              color: Colors.black26,
+              width: width,
+              height: height,
+              alignment: Alignment.center,
+              child: SizedBox
                 (
-                  color: inacColor,
-                  width: width,
-                  height: height,
-                  alignment: Alignment.center,
-                  child: SizedBox
-                    (
-                    width: 50,
-                    height: 50,
-                    child: CircularProgressIndicator(),
-                  )
-              );
-
-            default: return null;
-          }
+                width: 50,
+                height: 50,
+                child: CircularProgressIndicator(),
+              )
+          );
         }
     );
   }
@@ -89,11 +76,9 @@ class _SocietyScreenState extends State<SocietyScreen>
 
   Widget _buildSendButton()
   {
-    double _screenWidth = MediaQuery.of(context).size.width;
-
     void sendData() async
     {
-      _showDialog(2);
+      _showLoading();
       try
       {
         QuerySnapshot snapshot = await Firestore.instance.collection('consultores').orderBy('Nome').getDocuments();
@@ -194,8 +179,8 @@ class _SocietyScreenState extends State<SocietyScreen>
       (
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        color: secoColor,
-        child: Text("Enviar", style: TextStyle(color: contColor)),
+        color: Colors.redAccent,
+        child: Text("Enviar", style: TextStyle(color: Colors.white)),
         onPressed: sendData,
       ),
     );
@@ -204,59 +189,42 @@ class _SocietyScreenState extends State<SocietyScreen>
   Widget _buildBody()
   {
     double _screenWidth = MediaQuery.of(context).size.width;
-    double _screenHeight = MediaQuery.of(context).size.height;
+
     return Stack
     (
       children: <Widget>
       [
-        SizedBox
+        SingleChildScrollView
         (
-          width: _screenWidth,
-          height: _screenHeight,
-          child: Column
+          physics: BouncingScrollPhysics(),
+          child: Container
           (
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>
-            [
-              SizedBox(height: 120),
-              SingleChildScrollView
-                (
-                physics: BouncingScrollPhysics(),
-                child: Column
+            alignment: Alignment.topCenter,
+            margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+            child: Column
+            (
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>
+              [
+                SizedBox(height: 130),
+                _createField("Nome", _screenWidth, 100, false, false, nomeController),
+                Row
                   (
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>
                   [
-                    Container
-                      (
-                      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                      child: Column
-                        (
-                        children: <Widget>
-                        [
-                          _createField("Nome", _screenWidth, 100, false, false, nomeController),
-                          Row
-                            (
-                            children: <Widget>
-                            [
-                              _createField("DDD", 70.0, 2, true, true, dddController),
-                              _createField("Telefone", 120.0, 9, true, false, telController),
-                              _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
-                            ],
-                          ),
-                          Row
-                          (
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[_buildSendButton()],
-                          )
-                        ],
-                      ),
-                    ),
+                    _createField("DDD", 70.0, 2, true, true, dddController),
+                    _createField("Telefone", 120.0, 9, true, false, telController),
+                    _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
                   ],
                 ),
-              ),
-            ],
-          )
+                Row
+                  (
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[_buildSendButton()],
+                )
+              ],
+            ),
+          ),
         ),
         CustomBar("Quero Ser Sócio")
       ],
@@ -266,6 +234,14 @@ class _SocietyScreenState extends State<SocietyScreen>
   @override
   Widget build(BuildContext context)
   {
-    return _buildBody();
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    return SizedBox
+    (
+      height: _screenHeight,
+      width: _screenWidth,
+      child: _buildBody()
+    );
   }
 }

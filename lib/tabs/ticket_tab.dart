@@ -20,7 +20,6 @@ class _TicketTabState extends State<TicketTab>
   TextEditingController _dateController;
   TextEditingController _valueController;
 
-
   int itemAmount = 0;
   int adultAmount = 0;
   int kidAmount = 0;
@@ -457,44 +456,47 @@ class _TicketTabState extends State<TicketTab>
         SingleChildScrollView
         (
           physics: BouncingScrollPhysics(),
-          child: Column
-            (
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>
-            [
-              SizedBox(height: 120),
-              Container
-                (
-                margin: EdgeInsets.all(10),
-                decoration: BoxDecoration
+          child: Container
+          (
+            child: Column
+              (
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>
+              [
+                SizedBox(height: 120),
+                Container
                   (
-                    border: Border.all(width: 2, color: Colors.grey[700]),
-                    borderRadius: BorderRadius.circular(8)
-                ),
-                child: ClipRRect
-                  (
+                  margin: EdgeInsets.all(10),
+                  decoration: BoxDecoration
+                    (
+                      border: Border.all(width: 2, color: Colors.grey[700]),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: ClipRRect
+                    (
 
-                  borderRadius: BorderRadius.circular(5),
-                  child: ImageAssets.ticketImage,
+                    borderRadius: BorderRadius.circular(5),
+                    child: ImageAssets.ticketImage,
+                  ),
                 ),
-              ),
 
-              Container
-                (
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-                child: Column
+                Container
                   (
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>
-                  [
-                    _buildDatePicker(),
-                    _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
-                    _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-                    _buildPriceAndButton(),
-                  ],
-                ),
-              )
-            ],
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+                  child: Column
+                    (
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>
+                    [
+                      _buildDatePicker(),
+                      _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+                      _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+                      _buildPriceAndButton(),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         CustomBar("Bilheteria"),
@@ -515,6 +517,14 @@ class _TicketTabState extends State<TicketTab>
   @override
   Widget build(BuildContext context)
   {
-    return _buildBody();
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    return Container
+    (
+      height: _screenHeight,
+      width: _screenWidth,
+      child: _buildBody()
+    );
   }
 }
