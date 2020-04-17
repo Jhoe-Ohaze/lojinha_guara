@@ -1,15 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lojinha_guara/my_assets/icon_assets.dart';
+import 'package:lojinha_guara/my_assets/image_assets.dart';
 import 'package:lojinha_guara/tabs/excursion_tab.dart';
 import 'package:lojinha_guara/tabs/home_tab.dart';
 import 'package:lojinha_guara/tabs/society_tab.dart';
 import 'package:lojinha_guara/tabs/ticket_tab.dart';
 import 'package:lojinha_guara/tiles/drawer_tiles.dart';
-import 'package:lojinha_guara/my_assets/image_assets.dart';
 import 'package:lojinha_guara/tiles/exit_tile.dart';
 import 'package:lojinha_guara/tiles/login_tile.dart';
-
+import 'package:lojinha_guara/tiles/profile_tile.dart';
 
 class CustomDrawer extends StatefulWidget
 {
@@ -18,18 +18,19 @@ class CustomDrawer extends StatefulWidget
   final Function _setUser;
   final Function _logOut;
   final FirebaseUser _currentUser;
-
+  final Map<String, dynamic> _userData;
   CustomDrawer
   (
     this._setWidget,
     this._getPage,
     this._setUser,
     this._logOut,
-    this._currentUser
+    this._currentUser,
+    this._userData
   );
 
   @override
-  _CustomDrawerState createState() => _CustomDrawerState(_setWidget, _getPage, _setUser, _logOut, _currentUser);
+  _CustomDrawerState createState() => _CustomDrawerState(_setWidget, _getPage, _setUser, _logOut, _currentUser, _userData);
 }
 
 class _CustomDrawerState extends State<CustomDrawer>
@@ -39,6 +40,7 @@ class _CustomDrawerState extends State<CustomDrawer>
   final Function _setUser;
   final Function _logOut;
   final FirebaseUser _user;
+  final Map<String, dynamic> _userData;
 
   _CustomDrawerState
   (
@@ -47,17 +49,42 @@ class _CustomDrawerState extends State<CustomDrawer>
     this._setUser,
     this._logOut,
     this._user,
+    this._userData
   );
 
   @override
-  void initState()
+  void initState() => super.initState();
+
+  Widget _baseDrawerImage()
   {
-    super.initState();
+    return Container
+      (
+      height: 110,
+      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+      decoration: BoxDecoration
+        (
+        gradient: LinearGradient
+          (
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors:
+            [
+              Color(0xFF1133FF),
+              Color(0xAA0055FF),
+              Color(0x780088CC),
+              Color(0x4400FFFF),
+              Color(0x00FFFFFF)
+            ]
+        ),
+      ),
+      child: ImageAssets.drawerImage,
+    );
   }
 
   @override
   Widget build(BuildContext context)
   {
+
     return Drawer
     (
       child: Stack
@@ -70,31 +97,20 @@ class _CustomDrawerState extends State<CustomDrawer>
             [
               Container
               (
-                height: 110,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                decoration: BoxDecoration
-                (
-                  gradient: LinearGradient
+                height: 170,
+                child: _user == null ?
+                  _baseDrawerImage():
+                  Stack
                   (
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors:
+                    alignment: Alignment.center,
+                    children: <Widget>
                     [
-                      Color(0xFF1133FF),
-                      Color(0xAA0055FF),
-                      Color(0x780088CC),
-                      Color(0x4400FFFF),
-                      Color(0x00FFFFFF)
-                    ]
+                      ImageAssets.drawerCard,
+                      ProfileTile(_userData)
+                    ],
                   ),
-                ),
-                child: ImageAssets.logoImage,
               ),
-
-              Divider(color: Colors.grey[300], thickness: 1, height: 2),
-              Padding(padding: EdgeInsets.only(top: 5)),
-
-              LogInTile(_setUser),
+              _user == null ? LogInTile(_setUser):SizedBox(height: 1,width: 1),
               Divider(color: Colors.grey[300], thickness: 1),
 
               DrawerTile(Icons.home, "Início", HomeTab(_setWidget), _setWidget, _getPage, 0),

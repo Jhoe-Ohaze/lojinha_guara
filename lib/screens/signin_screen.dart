@@ -6,16 +6,18 @@ import 'package:flutter/services.dart';
 class SignInScreen extends StatefulWidget
 {
   final Function _logOut;
-  SignInScreen(this._logOut);
+  final Function _logIn;
+  SignInScreen(this._logOut, this._logIn);
 
   @override
-  _SignInScreenState createState() => _SignInScreenState(_logOut);
+  _SignInScreenState createState() => _SignInScreenState(_logOut, _logIn);
 }
 
 class _SignInScreenState extends State<SignInScreen>
 {
   final Function _logOut;
-  _SignInScreenState(this._logOut);
+  final Function _logIn;
+  _SignInScreenState(this._logOut, this._logIn);
 
   FirebaseUser _currentUser;
 
@@ -31,10 +33,7 @@ class _SignInScreenState extends State<SignInScreen>
   {
     double _screenWidth = MediaQuery.of(context).size.width;
 
-    void _initUser() async
-    {
-      _currentUser = await FirebaseAuth.instance.currentUser();
-    }
+    void _initUser() async => _currentUser = await FirebaseAuth.instance.currentUser();
 
     @override
     void initState()
@@ -66,6 +65,37 @@ class _SignInScreenState extends State<SignInScreen>
                   child: CircularProgressIndicator(),
                 )
             );
+          }
+      );
+    }
+
+    void _showDialog(int option)
+    {
+      showDialog
+        (
+          context: context,
+          builder: (context)
+          {
+            switch(option)
+            {
+              case 1: return AlertDialog
+                (
+                title: Text("Erro", textAlign: TextAlign.center,),
+                content: Text("Erro ao tentar se cadastrar, tente novamente", textAlign: TextAlign.justify,),
+                actions: <Widget>
+                [
+                  FlatButton
+                    (
+                    child: Text("ok"),
+                    onPressed: ()
+                    {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+              default: return null;
+            }
           }
       );
     }
@@ -102,99 +132,52 @@ class _SignInScreenState extends State<SignInScreen>
       );
     }
 
-    Widget _buildSendButton()
+    Widget _buildRegisterButton()
     {
       void sendData() async
       {
         _showLoading();
         try
         {
-          QuerySnapshot snapshot = await Firestore.instance.collection('consultores').orderBy('Nome').getDocuments();
-          List<DocumentSnapshot> consultorList = snapshot.documents.toList();
-
-          snapshot = await Firestore.instance.collection('sociedade').orderBy('DataExpedicao', descending: true).limit(1).getDocuments();
-          if(snapshot.documents.length == 0)
-          {
-            String nome = _nomeController.text;
-            int telefone = int.parse(_dddController.text + _telController.text);
-            int cpf = int.parse(_cpfController.text);
-
-            Firestore.instance.collection('sociedade').add
-              (
-                {
-                  "Numero": telefone,
-                  "LigacaoPendente": true,
-                  "Consultor": consultorList.elementAt(0).data["Nome"],
-                  "Nome": nome,
-                  "CPF": cpf,
-                  "DataExpedicao": DateTime.now(),
-                  "DataLigacao": null,
-                }
-            );
-
-            _nomeController.clear();
-            _dddController.clear();
-            _telController.clear();
-            _cpfController.clear();
-          }
-          else
-          {
-            DocumentSnapshot lastDocument = snapshot.documents.elementAt(0);
-
-            String lastCons = lastDocument.data['Consultor'];
-            String nextCons = "";
-            int count = 0;
-            for(DocumentSnapshot doc in consultorList)
+          await Firestore.instance.collection('users').add
+          (
             {
-              count++;
-              if(lastCons == doc.data['Nome'])
-              {
-                if(count >= consultorList.length)
-                  nextCons = consultorList.elementAt(0).data['Nome'];
-                else
-                  nextCons = consultorList.elementAt(count).data['Nome'];
-              }
+              "uid": _currentUser.uid,
+              "usuario": _currentUser.displayName,
+              "Nome": _nomeController.text,
+              "Foto": _currentUser.photoUrl,
+              "Email": _currentUser.email,
+              "CPF": int.parse(_cpfController.text),
+              "Telefone": int.parse(_dddController.text + _telController.text),
+              "Endereço": "${_adrController.text}, ${_numController.text}",
             }
+          );
 
-            String nome = _nomeController.text;
-            int telefone = int.parse(_dddController.text + _telController.text);
-            int cpf = int.parse(_cpfController.text);
-
-            Firestore.instance.collection('sociedade').add
-              (
-                {
-                  "Numero": telefone,
-                  "LigacaoPendente": true,
-                  "Consultor": nextCons,
-                  "Nome": nome,
-                  "CPF": cpf,
-                  "DataExpedicao": DateTime.now(),
-                  "DataLigacao": null,
-                }
-            );
-
-            _nomeController.clear();
-            _dddController.clear();
-            _telController.clear();
-            _cpfController.clear();
-          }
+          _nomeController.clear();
+          _dddController.clear();
+          _telController.clear();
+          _cpfController.clear();
+          _adrController.clear();
+          _numController.clear();
 
           setState(()
           {
             FocusScope.of(context).requestFocus(FocusNode());
             Navigator.of(context).pop();
-            Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Solicitação Enviada")));
+            Navigator.of(context).pop();
           });
+
+          _logIn();
         }
+
         catch(e)
         {
           setState(()
           {
+            _logOut();
             FocusScope.of(context).requestFocus(FocusNode());
             Navigator.of(context).pop();
-            Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Erro ao enviar solicitação")));
+            _showDialog(1);
           });
         }
       }
@@ -268,7 +251,7 @@ class _SignInScreenState extends State<SignInScreen>
                         Row
                           (
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget> [_buildSendButton()],
+                          children: <Widget> [_buildRegisterButton()],
                         )
                       ],
                     ),

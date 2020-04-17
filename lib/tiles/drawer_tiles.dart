@@ -12,8 +12,8 @@ class DrawerTile extends StatelessWidget
 
   DrawerTile(this.icon, this.text, this._targetWidget, this._setWidget, this._currentPage, this.page);
 
-  final blue = Color(0xFF0055FF);
-  final cyan = Color(0x6633CCFF);
+  final blue = Color(0xFF2277DD);
+  final cyan = Color(0x4466CCEE);
 
   @override
   Widget build(BuildContext context)
