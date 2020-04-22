@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lojinha_guara/screens/main_screen.dart';
+import 'package:lojinha_guara/main_screen.dart';
 
 void main() => runApp(MyApp());
 
