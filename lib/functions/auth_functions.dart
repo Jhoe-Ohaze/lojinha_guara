@@ -6,22 +6,21 @@ import 'package:flutter/material.dart';
 
 class AuthFunctions
 {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  FirebaseUser currentUser;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final BuildContext context;
+  AuthFunctions(this.context);
+
+  FirebaseUser _currentUser;
   Map<String, dynamic> userData;
 
   String _uid;
   CollectionReference _colRef;
   QuerySnapshot _qrySnap;
 
-  final BuildContext context;
-  final GlobalKey<ScaffoldState> _scaffoldKey;
-  AuthFunctions(this.context, this._scaffoldKey);
-
   void initVariables() async
   {
-    currentUser = await FirebaseAuth.instance.currentUser();
-    _uid = currentUser.uid;
+    _currentUser = await FirebaseAuth.instance.currentUser();
+    _uid = _currentUser.uid;
     _colRef = Firestore.instance.collection('users');
     _qrySnap = await _colRef.where('uid', isEqualTo: _uid).getDocuments();
     userData = _qrySnap.documents.elementAt(0).data;
@@ -58,8 +57,30 @@ class AuthFunctions
   void logOut()
   {
     FirebaseAuth.instance.signOut();
-    _googleSignIn.signOut();
-    currentUser = null;
+    googleSignIn.signOut();
+    _currentUser = null;
+  }
+
+  void checkData()
+  {
+    print(_currentUser);
+    if(_currentUser != null && userData == {}) logOut();
+    else if(_currentUser != null)
+    {
+      if(_currentUser.displayName != userData['usuario'] || _currentUser.photoUrl != userData['Foto'])
+      {
+        if (_currentUser.displayName != userData['usuario'])
+        {
+          userData['usuario'] = _currentUser.displayName;
+          updateData(1);
+        }
+        if (_currentUser.photoUrl != userData['Foto'])
+        {
+          userData['Foto'] = _currentUser.photoUrl;
+          updateData(2);
+        }
+      }
+    }
   }
 
   void logIn() async
@@ -74,30 +95,8 @@ class AuthFunctions
     catch(e)
     {
       Navigator.of(context).pop();
-      _scaffoldKey.currentState.hideCurrentSnackBar();
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Não foi possível efetuar LogIn")));
-    }
-  }
-
-  void checkData()
-  {
-    print(currentUser);
-    if(currentUser != null && userData == {}) logOut();
-    else if(currentUser != null)
-    {
-      if(currentUser.displayName != userData['usuario'] || currentUser.photoUrl != userData['Foto'])
-      {
-        if (currentUser.displayName != userData['usuario'])
-        {
-          userData['usuario'] = currentUser.displayName;
-          updateData(1);
-        }
-        if (currentUser.photoUrl != userData['Foto'])
-        {
-          userData['Foto'] = currentUser.photoUrl;
-          updateData(2);
-        }
-      }
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Não foi possível efetuar Login")));
     }
   }
 
@@ -108,10 +107,10 @@ class AuthFunctions
     switch(option)
     {
       case 1:
-        await Firestore.instance.collection('users').document(docId).updateData({'usuario':currentUser.displayName});
+        await Firestore.instance.collection('users').document(docId).updateData({'usuario':_currentUser.displayName});
         break;
       case 2:
-        await Firestore.instance.collection('users').document(docId).updateData({'Foto':currentUser.photoUrl});
+        await Firestore.instance.collection('users').document(docId).updateData({'Foto':_currentUser.photoUrl});
         break;
       default: break;
     }
@@ -119,9 +118,9 @@ class AuthFunctions
 
   Future<FirebaseUser> getUser() async
   {
-    if(currentUser != null) return currentUser;
+    if(_currentUser != null) return _currentUser;
     final GoogleSignInAccount googleSignInAccount =
-    await _googleSignIn.signIn();
+    await googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
     await googleSignInAccount.authentication;
 
@@ -137,15 +136,15 @@ class AuthFunctions
     return user;
   }
 
-  void setUser() async
+  void _setUser() async
   {
     _showLoading();
     try
     {
       final FirebaseUser user = await getUser();
-      currentUser = user;
+      _currentUser = user;
 
-      final String uid = currentUser.uid;
+      final String uid = _currentUser.uid;
       CollectionReference colRef = Firestore.instance.collection('users');
       QuerySnapshot querySnapshot = await colRef.where('uid', isEqualTo: uid).getDocuments();
       Navigator.of(context).pop();
@@ -157,9 +156,6 @@ class AuthFunctions
     {
       Navigator.of(context).pop();
       logOut();
-      _scaffoldKey.currentState.hideCurrentSnackBar();
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Não foi possível efetuar LogIn")));
     }
   }
-
 }

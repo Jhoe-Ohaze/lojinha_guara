@@ -13,21 +13,20 @@ class MainScreen extends StatefulWidget
 
 class _MainScreenState extends State<MainScreen>
 {
-  AuthFunctions auth;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Widget _currentWidget;
   int _currentPage = 0;
+  AuthFunctions auth;
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState()
   {
     super.initState();
-    auth = AuthFunctions(context, _scaffoldKey);
     _currentWidget = HomeTab(setCurrentWidget);
+    auth = AuthFunctions(context);
     auth.initVariables();
   }
-
-  int _getPage() {return _currentPage;}
 
   void setCurrentWidget(id, widget)
   {
@@ -38,24 +37,16 @@ class _MainScreenState extends State<MainScreen>
     });
   }
 
+  int _getPage() {return _currentPage;}
+
   @override
   Widget build(BuildContext context)
   {
-
-    Widget _buildBody()
-    {
-      return AnimatedSwitcher
-      (
-        duration: const Duration(milliseconds: 500),
-        child: _currentWidget,
-      );
-    }
-
     return Scaffold
     (
       key: _scaffoldKey,
-      drawer: CustomDrawer(setCurrentWidget, _getPage, auth.setUser, auth.logOut, auth.currentUser, auth.userData),
-      body: _buildBody(),
+      drawer: CustomDrawer(setCurrentWidget, _getPage, _setUser, _logOut, _currentUser, _userData),
+      body: _currentWidget,
     );
   }
 

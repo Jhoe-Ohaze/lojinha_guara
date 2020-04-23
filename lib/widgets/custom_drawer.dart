@@ -84,6 +84,7 @@ class _CustomDrawerState extends State<CustomDrawer>
   @override
   Widget build(BuildContext context)
   {
+
     return Drawer
     (
       child: Stack
@@ -109,7 +110,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                     ],
                   ),
               ),
-              _user == null ? LogInTile(_setUser):Container(),
+              _user == null ? LogInTile(_setUser):SizedBox(height: 1,width: 1),
               Divider(color: Colors.grey[300], thickness: 1),
 
               DrawerTile(Icons.home, "Início", HomeTab(_setWidget), _setWidget, _getPage, 0),
