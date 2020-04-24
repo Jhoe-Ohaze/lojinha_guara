@@ -15,6 +15,9 @@ class ImageAssets
   static final Image drawerCard = Image.asset(_root+'drawer_card.png',
       fit: BoxFit.fill, width: 500,);
 
+  static final Image loadingImage = Image.asset(_root+'logo_loading.png',
+      width: 200,);
+
   static final Image sendButtonImage = Image.asset(_root+'send_button.png',
       fit: BoxFit.fill, color: Color.fromRGBO(255, 255, 255, 0.8),
       colorBlendMode: BlendMode.modulate);

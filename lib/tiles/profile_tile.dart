@@ -34,7 +34,8 @@ class _ProfileTileState extends State<ProfileTile>
                 child: Container(decoration: BoxDecoration
                 (
                   border: Border.all(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.circular(9)
+                  borderRadius: BorderRadius.circular(9),
+                  color: Colors.white
                 ), child: SizedBox(width: 84, height: 84),),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -42,7 +43,7 @@ class _ProfileTileState extends State<ProfileTile>
               (
                 borderRadius: BorderRadius.circular(8),
                 child: SizedBox(width: 85, height: 85,
-                  child: Image.network(_userData["Foto"], fit: BoxFit.fitHeight, alignment: Alignment.topCenter,),)
+                child: Image.network(_userData["Foto"], fit: BoxFit.fitHeight, alignment: Alignment.topCenter),)
               )
             ]
           ),

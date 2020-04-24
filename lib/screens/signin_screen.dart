@@ -167,7 +167,7 @@ class _SignInScreenState extends State<SignInScreen>
             Navigator.of(context).pop();
           });
 
-          _logIn();
+          await _logIn();
         }
 
         catch(e)
