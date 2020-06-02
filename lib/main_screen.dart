@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen>
   void initState()
   {
     super.initState();
-    _currentWidget = initLoading();
+    _currentWidget = HomeTab(setCurrentWidget);
     auth = AuthFunctions(context);
     initVariables();
   }
@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen>
   Widget _buildBody()
   {
     return Scaffold
-      (
+    (
       key: _scaffoldKey,
       drawer: CustomDrawer(setCurrentWidget, _getPage, _setUser, _logOut, _currentUser, _userData),
       body: AnimatedSwitcher
@@ -65,12 +65,10 @@ class _MainScreenState extends State<MainScreen>
 
   Widget initLoading()
   {
-    return Container
+    return Scaffold
       (
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      color: Colors.blue,
-      child: Column
+
+      body: Column
         (
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>

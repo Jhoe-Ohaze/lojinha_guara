@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lojinha_guara/screens/payment_screen.dart';
 import 'package:lojinha_guara/widgets/custom_bar.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
 
@@ -363,6 +364,12 @@ class _TicketTabState extends State<TicketTab>
     );
   }
 
+  void openCheckout()
+  {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => PaymentScreen()));
+  }
+
   Widget _buildPriceAndButton()
   {
     return Padding
@@ -434,11 +441,7 @@ class _TicketTabState extends State<TicketTab>
                         border: InputBorder.none
                       ),
                     ),
-                    onPressed: ()
-                    {
-                      Scaffold.of(context).hideCurrentSnackBar();
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("tap"),));
-                    },
+                    onPressed: openCheckout
                   ),
                 )
             )
