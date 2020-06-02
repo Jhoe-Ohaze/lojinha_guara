@@ -45,12 +45,12 @@ class CustomFeed extends StatelessWidget
                 Container
                  (
                   padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Text(title, style: TextStyle(fontSize: 25, fontFamily: 'Fredoka')),
+                  child: Text(title, style: TextStyle(fontSize: 18, fontFamily: 'Fredoka')),
                 ),
-                Text(text, style: TextStyle(fontFamily: 'Fredoka', color: Colors.grey[600])),
+                Text(text, style: TextStyle(color: Colors.grey[600])),
                 Container
                 (
-                  margin: EdgeInsets.only(top: 20, bottom: 5),
+                  margin: EdgeInsets.symmetric(vertical: 10),
                   alignment: Alignment.centerRight,
                   child: MaterialButton
                   (

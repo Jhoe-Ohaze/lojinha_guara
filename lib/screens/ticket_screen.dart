@@ -2,18 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lojinha_guara/widgets/custom_bar.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
 
-class TicketTab extends StatefulWidget
+class TicketScreen extends StatefulWidget
 {
   final id = 1;
 
   @override
-  _TicketTabState createState() => _TicketTabState();
+  _TicketScreenState createState() => _TicketScreenState();
 }
 
-class _TicketTabState extends State<TicketTab>
+class _TicketScreenState extends State<TicketScreen>
 {
   TextEditingController _adultController;
   TextEditingController _kidController;
@@ -449,58 +448,56 @@ class _TicketTabState extends State<TicketTab>
 
   Widget _buildBody()
   {
-    return Stack
+    return Scaffold
     (
-      children: <Widget>
-      [
-        SingleChildScrollView
+      appBar: AppBar
+      (
+        title: Text("Comprar bilhete", style: TextStyle(fontFamily: "Fredoka")),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView
+      (
+        physics: BouncingScrollPhysics(),
+        child: Column
         (
-          physics: BouncingScrollPhysics(),
-          child: Container
-          (
-            child: Column
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>
+          [
+            Container
               (
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>
-              [
-                SizedBox(height: 120),
-                Container
-                  (
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration
-                    (
-                      border: Border.all(width: 2, color: Colors.grey[700]),
-                      borderRadius: BorderRadius.circular(8)
-                  ),
-                  child: ClipRRect
-                    (
+              margin: EdgeInsets.all(10),
+              decoration: BoxDecoration
+                (
+                  border: Border.all(width: 2, color: Colors.grey[700]),
+                  borderRadius: BorderRadius.circular(8)
+              ),
+              child: ClipRRect
+                (
 
-                    borderRadius: BorderRadius.circular(5),
-                    child: ImageAssets.ticketImage,
-                  ),
-                ),
-
-                Container
-                  (
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-                  child: Column
-                    (
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>
-                    [
-                      _buildDatePicker(),
-                      _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
-                      _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-                      _buildPriceAndButton(),
-                    ],
-                  ),
-                )
-              ],
+                borderRadius: BorderRadius.circular(5),
+                child: ImageAssets.ticketImage,
+              ),
             ),
-          ),
+
+            Container
+              (
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+              child: Column
+                (
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>
+                [
+                  _buildDatePicker(),
+                  _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+                  _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+                  _buildPriceAndButton(),
+                ],
+              ),
+            )
+          ],
         ),
-        CustomBar("Bilheteria"),
-      ],
+      ),
     );
   }
 
