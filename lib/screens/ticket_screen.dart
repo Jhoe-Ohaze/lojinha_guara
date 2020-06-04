@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
+import 'package:lojinha_guara/screens/payment_screen.dart';
 
 class TicketScreen extends StatefulWidget
 {
@@ -29,7 +30,9 @@ class _TicketScreenState extends State<TicketScreen>
   double adultPrice = 0.00;
   double kidPrice = 0.00;
   double totalPrice = 0.00;
+
   bool firstRun = true;
+  bool isButtonEnabled = false;
 
   int weekday = 0;
 
@@ -146,6 +149,23 @@ class _TicketScreenState extends State<TicketScreen>
             ],
           ); break;
 
+          case 2: return AlertDialog
+            (
+            title: Text("Aviso", textAlign: TextAlign.center,),
+            content: Text("A quantidade de ingressos é 0", textAlign: TextAlign.justify),
+            actions: <Widget>
+            [
+              FlatButton
+                (
+                child: Text("ok"),
+                onPressed: ()
+                {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ); break;
+
           default: return null;
         }
       }
@@ -204,7 +224,7 @@ class _TicketScreenState extends State<TicketScreen>
                   (
                     cursorColor: Color(0x00ffffff),
                     textAlign: TextAlign.center,
-                    keyboardType: TextInputType.numberWithOptions(),
+                    enabled: false,
                     controller: numberController,
                     decoration: InputDecoration
                     (
@@ -342,8 +362,8 @@ class _TicketScreenState extends State<TicketScreen>
                       textAlign: TextAlign.center,
                       controller: _dateController,
                       decoration: InputDecoration
-                        (
-                          border: InputBorder.none
+                      (
+                        border: InputBorder.none
                       ),
                     ),
                   ),
@@ -373,9 +393,9 @@ class _TicketScreenState extends State<TicketScreen>
           children: <Widget>
           [
             Container
-              (
+            (
               decoration: BoxDecoration
-                (
+              (
                 border: Border.all(color: Colors.redAccent, width: 2),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -386,7 +406,7 @@ class _TicketScreenState extends State<TicketScreen>
                   Container
                     (
                     padding: EdgeInsets.only(left: 10),
-                    child: Text("R\$", style: TextStyle(fontSize: 16),),
+                    child: Text("R\$", style: TextStyle(fontSize: 16)),
                   ),
                   Container
                     (
@@ -416,11 +436,12 @@ class _TicketScreenState extends State<TicketScreen>
                   decoration: BoxDecoration
                   (
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.redAccent
+                    color: isButtonEnabled ? Colors.redAccent : Color(0x66CC2222)
                   ),
                   margin: EdgeInsets.only(left: 5),
                   child: MaterialButton
                   (
+
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                     child: TextField
                     (
@@ -433,17 +454,208 @@ class _TicketScreenState extends State<TicketScreen>
                         border: InputBorder.none
                       ),
                     ),
-                    onPressed: ()
-                    {
-                      Scaffold.of(context).hideCurrentSnackBar();
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("tap"),));
-                    },
+                    onPressed: isButtonEnabled ? GoToCheckout : null,
                   ),
                 )
             )
           ],
         )
     );
+  }
+
+  void GoToCheckout()
+  {
+    if(itemAmount == 0)
+    {
+      _showDialog(2);
+    }
+    else
+    {
+      Map<String, dynamic> checkoutMap;
+
+      if(kidAmount > 0 && adultAmount == 0)
+      {
+        checkoutMap = {
+          "OrderNumber":"0",
+          "SoftDescriptor":"Test",
+          "Cart":{
+            "Discount":{
+              "Type":"Percent",
+              "Value":00
+            },
+            "Items":
+            [
+              {
+                "Name":"Ingresso infantil",
+                "Description":"",
+                "UnitPrice":100*kidPrice.toInt(),
+                "Quantity":kidAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              },
+            ]
+          },
+          "Shipping":{
+            "SourceZipCode":"",
+            "TargetZipCode":"",
+            "Type":"WithoutShippingPickUp",
+            "Services":[],
+            "Address":{
+              "Street":"",
+              "Number":"",
+              "Complement":"",
+              "District":"",
+              "City":"",
+              "State":""
+            }
+          },
+          "Payment":{
+            "BoletoDiscount":0,
+            "DebitDiscount":0,
+            "Installments":null,
+            "MaxNumberOfInstallments": null
+          },
+          "Customer":{
+            "Identity":"",
+            "FullName":"",
+            "Email":"",
+            "Phone":""
+          },
+          "Options":{
+            "AntifraudEnabled":true,
+            "ReturnUrl": ""
+          },
+          "Settings":null
+        };
+      }
+      else if(adultAmount > 0 && kidAmount == 0)
+      {
+        checkoutMap = {
+          "OrderNumber":"0",
+          "SoftDescriptor":"Test",
+          "Cart":{
+            "Discount":{
+              "Type":"Percent",
+              "Value":00
+            },
+            "Items":
+            [
+              {
+                "Name":"Ingresso adulto",
+                "Description":"",
+                "UnitPrice":100*adultPrice.toInt(),
+                "Quantity":adultAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              }
+            ]
+          },
+          "Shipping":{
+            "SourceZipCode":"",
+            "TargetZipCode":"",
+            "Type":"WithoutShippingPickUp",
+            "Services":[],
+            "Address":{
+              "Street":"",
+              "Number":"",
+              "Complement":"",
+              "District":"",
+              "City":"",
+              "State":""
+            }
+          },
+          "Payment":{
+            "BoletoDiscount":0,
+            "DebitDiscount":0,
+            "Installments":null,
+            "MaxNumberOfInstallments": null
+          },
+          "Customer":{
+            "Identity":"",
+            "FullName":"",
+            "Email":"",
+            "Phone":""
+          },
+          "Options":{
+            "AntifraudEnabled":true,
+            "ReturnUrl": ""
+          },
+          "Settings":null
+        };
+      }
+      else
+      {
+        checkoutMap = {
+          "OrderNumber":"0",
+          "SoftDescriptor":"Test",
+          "Cart":{
+            "Discount":{
+              "Type":"Percent",
+              "Value":00
+            },
+            "Items":
+            [
+              {
+                "Name":"Ingresso infantil",
+                "Description":"",
+                "UnitPrice":100*kidPrice.toInt(),
+                "Quantity":kidAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              },
+              {
+                "Name":"Ingresso adulto",
+                "Description":"",
+                "UnitPrice":100*adultPrice.toInt(),
+                "Quantity":adultAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              }
+            ]
+          },
+          "Shipping":{
+            "SourceZipCode":"",
+            "TargetZipCode":"",
+            "Type":"WithoutShippingPickUp",
+            "Services":[],
+            "Address":{
+              "Street":"",
+              "Number":"",
+              "Complement":"",
+              "District":"",
+              "City":"",
+              "State":""
+            }
+          },
+          "Payment":{
+            "BoletoDiscount":0,
+            "DebitDiscount":0,
+            "Installments":null,
+            "MaxNumberOfInstallments": null
+          },
+          "Customer":{
+            "Identity":"",
+            "FullName":"",
+            "Email":"",
+            "Phone":""
+          },
+          "Options":{
+            "AntifraudEnabled":true,
+            "ReturnUrl": ""
+          },
+          "Settings":null
+        };
+      }
+
+      Navigator.of(context).push
+        (
+          MaterialPageRoute(builder: (context) => PaymentScreen(checkoutMap))
+      );
+    }
   }
 
   Widget _buildBody()
@@ -508,6 +720,7 @@ class _TicketScreenState extends State<TicketScreen>
       itemAmount = adultAmount + kidAmount;
       totalPrice = (adultPrice*adultAmount) + (kidPrice*kidAmount);
       _valueController.text = totalPrice.toString() + "0";
+      isButtonEnabled = (itemAmount > 0);
     });
   }
 
@@ -518,10 +731,10 @@ class _TicketScreenState extends State<TicketScreen>
     double _screenHeight = MediaQuery.of(context).size.height;
 
     return Container
-    (
-      height: _screenHeight,
-      width: _screenWidth,
-      child: _buildBody()
+      (
+        height: _screenHeight,
+        width: _screenWidth,
+        child: _buildBody()
     );
   }
 }

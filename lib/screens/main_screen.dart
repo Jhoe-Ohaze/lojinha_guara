@@ -18,7 +18,7 @@ class MainScreenState extends State<MainScreen>
   static AuthFunctions authFunctions;
   FirebaseUser _currentUser;
 
-  List<Widget> _widgetList = [HomeTab(), Container(), ProfileTab()];
+  List<Widget> _widgetList = [HomeTab(), ProfileTab()];
 
   @override
   void initState()
@@ -61,27 +61,21 @@ class MainScreenState extends State<MainScreen>
         child: BottomNavigationBar
           (
             elevation: 0,
-            unselectedFontSize: 0,
-            selectedFontSize: 0,
+            unselectedFontSize: 10,
+            selectedFontSize: 10,
             iconSize: 30,
             items:
             [
               new BottomNavigationBarItem
               (
                 icon: const Icon(Icons.home),
-                title: new Text(''),
-              ),
-
-              new BottomNavigationBarItem
-              (
-                icon: const Icon(Icons.beach_access),
-                title: new Text(''),
+                title: new Text('Início'),
               ),
 
               new BottomNavigationBarItem
               (
                 icon: const Icon(Icons.account_circle),
-                title: new Text(''),
+                title: new Text('Perfil'),
               )
             ],
             currentIndex: _currentIndex,
