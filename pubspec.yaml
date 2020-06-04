@@ -23,20 +23,23 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  flutter_staggered_grid_view: ^0.3.0
   cloud_firestore: ^0.12.9
-  transparent_image: ^1.0.0
   google_sign_in: ^4.4.1
   firebase_storage: ^3.1.5
   firebase_auth: ^0.15.5+3
   url_launcher: ^5.1.1
+  webview_flutter: ^0.3.0
   flutter_calendar_carousel: ^1.4.11
-  google_maps_flutter: ^0.5.24+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.7.5
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/my_assets/images/logo_launcher.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -61,6 +64,9 @@ flutter:
     - family: Icons
       fonts:
         - asset: lib/my_assets/icons/IconFont.ttf
+    - family: Quicksand
+      fonts:
+        - asset: lib/my_assets/fonts/Quicksand.ttf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

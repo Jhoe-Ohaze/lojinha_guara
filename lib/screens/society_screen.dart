@@ -190,44 +190,44 @@ class _SocietyScreenState extends State<SocietyScreen>
   {
     double _screenWidth = MediaQuery.of(context).size.width;
 
-    return Stack
+    return Scaffold
     (
-      children: <Widget>
-      [
-        SingleChildScrollView
+      appBar: AppBar
         (
-          physics: BouncingScrollPhysics(),
-          child: Container
+        title: Text("Quero ser socio!", style: TextStyle(fontFamily: "Fredoka")),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView
+        (
+        physics: BouncingScrollPhysics(),
+        child: Container
           (
-            alignment: Alignment.topCenter,
-            margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-            child: Column
+          alignment: Alignment.topCenter,
+          margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+          child: Column
             (
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>
-              [
-                SizedBox(height: 130),
-                _createField("Nome", _screenWidth, 100, false, false, nomeController),
-                Row
-                  (
-                  children: <Widget>
-                  [
-                    _createField("DDD", 70.0, 2, true, true, dddController),
-                    _createField("Telefone", 120.0, 9, true, false, telController),
-                    _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
-                  ],
-                ),
-                Row
-                  (
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[_buildSendButton()],
-                )
-              ],
-            ),
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>
+            [
+              _createField("Nome", _screenWidth, 100, false, false, nomeController),
+              Row
+                (
+                children: <Widget>
+                [
+                  _createField("DDD", 70.0, 2, true, true, dddController),
+                  _createField("Telefone", 120.0, 9, true, false, telController),
+                  _createField("CPF", _screenWidth - 200, 11, true, false, cpfController)
+                ],
+              ),
+              Row
+                (
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[_buildSendButton()],
+              )
+            ],
           ),
         ),
-        CustomBar("Quero Ser Sócio")
-      ],
+      ),
     );
   }
 

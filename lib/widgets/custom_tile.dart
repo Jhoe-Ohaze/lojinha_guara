@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
-class DrawerTile extends StatelessWidget
+class CustomTile extends StatelessWidget
 {
   final IconData icon;
   final String text;
-  final int page;
-  final Widget _targetWidget;
-  final Function _setWidget;
-  final Function _currentPage;
+  final Function function;
 
-
-  DrawerTile(this.icon, this.text, this._targetWidget, this._setWidget, this._currentPage, this.page);
+  CustomTile(this.icon, this.text, this.function);
 
   final blue = Color(0xFF2277DD);
   final cyan = Color(0x4466CCEE);
@@ -18,29 +14,17 @@ class DrawerTile extends StatelessWidget
   @override
   Widget build(BuildContext context)
   {
-    final pageID = _currentPage();
     return Material
     (
       color: Colors.transparent,
       child: InkWell
       (
-        onTap: ()
-        {
-          FocusScope.of(context).requestFocus(FocusNode());
-          Navigator.of(context).pop();
-          _setWidget(page, Container());
-          _setWidget(page, _targetWidget);
-        },
+        onTap: function,
         child: Container
         (
           padding: EdgeInsets.symmetric(horizontal: 10),
           margin: EdgeInsets.symmetric(horizontal: 10),
-          
-          decoration: BoxDecoration
-          (
-            color: pageID == page ? cyan:Colors.transparent,
-            borderRadius: BorderRadius.circular(20)
-          ),
+
           height: 40.0,
           child: Row
           (
@@ -50,7 +34,7 @@ class DrawerTile extends StatelessWidget
               (
                 icon,
                 size: 25.0,
-                color: pageID == page ? blue : Colors.grey[700],
+                color: Colors.grey[600],
               ),
               SizedBox(width: 15.0),
               Text
@@ -59,9 +43,11 @@ class DrawerTile extends StatelessWidget
                 style: TextStyle
                 (
                   fontSize: 16.0,
-                  color: pageID == page ? blue : Colors.grey[700]
+                  color: Colors.grey[600]
                 ),
-              )
+              ),
+              Expanded(child: Container()),
+              Icon(Icons.chevron_right, size: 20, color: Colors.grey[600],)
             ],
           ),
         ),

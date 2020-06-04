@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lojinha_guara/widgets/custom_bar.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
+import 'package:lojinha_guara/screens/payment_screen.dart';
 
-class TicketTab extends StatefulWidget
+class TicketScreen extends StatefulWidget
 {
   final id = 1;
 
   @override
-  _TicketTabState createState() => _TicketTabState();
+  _TicketScreenState createState() => _TicketScreenState();
 }
 
-class _TicketTabState extends State<TicketTab>
+class _TicketScreenState extends State<TicketScreen>
 {
   TextEditingController _adultController;
   TextEditingController _kidController;
@@ -30,7 +30,9 @@ class _TicketTabState extends State<TicketTab>
   double adultPrice = 0.00;
   double kidPrice = 0.00;
   double totalPrice = 0.00;
+
   bool firstRun = true;
+  bool isButtonEnabled = false;
 
   int weekday = 0;
 
@@ -147,6 +149,23 @@ class _TicketTabState extends State<TicketTab>
             ],
           ); break;
 
+          case 2: return AlertDialog
+            (
+            title: Text("Aviso", textAlign: TextAlign.center,),
+            content: Text("A quantidade de ingressos é 0", textAlign: TextAlign.justify),
+            actions: <Widget>
+            [
+              FlatButton
+                (
+                child: Text("ok"),
+                onPressed: ()
+                {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ); break;
+
           default: return null;
         }
       }
@@ -205,7 +224,7 @@ class _TicketTabState extends State<TicketTab>
                   (
                     cursorColor: Color(0x00ffffff),
                     textAlign: TextAlign.center,
-                    keyboardType: TextInputType.numberWithOptions(),
+                    enabled: false,
                     controller: numberController,
                     decoration: InputDecoration
                     (
@@ -343,8 +362,8 @@ class _TicketTabState extends State<TicketTab>
                       textAlign: TextAlign.center,
                       controller: _dateController,
                       decoration: InputDecoration
-                        (
-                          border: InputBorder.none
+                      (
+                        border: InputBorder.none
                       ),
                     ),
                   ),
@@ -374,9 +393,9 @@ class _TicketTabState extends State<TicketTab>
           children: <Widget>
           [
             Container
-              (
+            (
               decoration: BoxDecoration
-                (
+              (
                 border: Border.all(color: Colors.redAccent, width: 2),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -387,7 +406,7 @@ class _TicketTabState extends State<TicketTab>
                   Container
                     (
                     padding: EdgeInsets.only(left: 10),
-                    child: Text("R\$", style: TextStyle(fontSize: 16),),
+                    child: Text("R\$", style: TextStyle(fontSize: 16)),
                   ),
                   Container
                     (
@@ -417,11 +436,12 @@ class _TicketTabState extends State<TicketTab>
                   decoration: BoxDecoration
                   (
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.redAccent
+                    color: isButtonEnabled ? Colors.redAccent : Color(0x66CC2222)
                   ),
                   margin: EdgeInsets.only(left: 5),
                   child: MaterialButton
                   (
+
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                     child: TextField
                     (
@@ -434,11 +454,7 @@ class _TicketTabState extends State<TicketTab>
                         border: InputBorder.none
                       ),
                     ),
-                    onPressed: ()
-                    {
-                      Scaffold.of(context).hideCurrentSnackBar();
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("tap"),));
-                    },
+                    onPressed: isButtonEnabled ? GoToCheckout : null,
                   ),
                 )
             )
@@ -447,60 +463,253 @@ class _TicketTabState extends State<TicketTab>
     );
   }
 
+  void GoToCheckout()
+  {
+    if(itemAmount == 0)
+    {
+      _showDialog(2);
+    }
+    else
+    {
+      Map<String, dynamic> checkoutMap;
+
+      if(kidAmount > 0 && adultAmount == 0)
+      {
+        checkoutMap = {
+          "OrderNumber":"0",
+          "SoftDescriptor":"Test",
+          "Cart":{
+            "Discount":{
+              "Type":"Percent",
+              "Value":00
+            },
+            "Items":
+            [
+              {
+                "Name":"Ingresso infantil",
+                "Description":"",
+                "UnitPrice":100*kidPrice.toInt(),
+                "Quantity":kidAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              },
+            ]
+          },
+          "Shipping":{
+            "SourceZipCode":"",
+            "TargetZipCode":"",
+            "Type":"WithoutShippingPickUp",
+            "Services":[],
+            "Address":{
+              "Street":"",
+              "Number":"",
+              "Complement":"",
+              "District":"",
+              "City":"",
+              "State":""
+            }
+          },
+          "Payment":{
+            "BoletoDiscount":0,
+            "DebitDiscount":0,
+            "Installments":null,
+            "MaxNumberOfInstallments": null
+          },
+          "Customer":{
+            "Identity":"",
+            "FullName":"",
+            "Email":"",
+            "Phone":""
+          },
+          "Options":{
+            "AntifraudEnabled":true,
+            "ReturnUrl": ""
+          },
+          "Settings":null
+        };
+      }
+      else if(adultAmount > 0 && kidAmount == 0)
+      {
+        checkoutMap = {
+          "OrderNumber":"0",
+          "SoftDescriptor":"Test",
+          "Cart":{
+            "Discount":{
+              "Type":"Percent",
+              "Value":00
+            },
+            "Items":
+            [
+              {
+                "Name":"Ingresso adulto",
+                "Description":"",
+                "UnitPrice":100*adultPrice.toInt(),
+                "Quantity":adultAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              }
+            ]
+          },
+          "Shipping":{
+            "SourceZipCode":"",
+            "TargetZipCode":"",
+            "Type":"WithoutShippingPickUp",
+            "Services":[],
+            "Address":{
+              "Street":"",
+              "Number":"",
+              "Complement":"",
+              "District":"",
+              "City":"",
+              "State":""
+            }
+          },
+          "Payment":{
+            "BoletoDiscount":0,
+            "DebitDiscount":0,
+            "Installments":null,
+            "MaxNumberOfInstallments": null
+          },
+          "Customer":{
+            "Identity":"",
+            "FullName":"",
+            "Email":"",
+            "Phone":""
+          },
+          "Options":{
+            "AntifraudEnabled":true,
+            "ReturnUrl": ""
+          },
+          "Settings":null
+        };
+      }
+      else
+      {
+        checkoutMap = {
+          "OrderNumber":"0",
+          "SoftDescriptor":"Test",
+          "Cart":{
+            "Discount":{
+              "Type":"Percent",
+              "Value":00
+            },
+            "Items":
+            [
+              {
+                "Name":"Ingresso infantil",
+                "Description":"",
+                "UnitPrice":100*kidPrice.toInt(),
+                "Quantity":kidAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              },
+              {
+                "Name":"Ingresso adulto",
+                "Description":"",
+                "UnitPrice":100*adultPrice.toInt(),
+                "Quantity":adultAmount,
+                "Type":"Asset",
+                "Sku":"ABC001",
+                "Weight":0
+              }
+            ]
+          },
+          "Shipping":{
+            "SourceZipCode":"",
+            "TargetZipCode":"",
+            "Type":"WithoutShippingPickUp",
+            "Services":[],
+            "Address":{
+              "Street":"",
+              "Number":"",
+              "Complement":"",
+              "District":"",
+              "City":"",
+              "State":""
+            }
+          },
+          "Payment":{
+            "BoletoDiscount":0,
+            "DebitDiscount":0,
+            "Installments":null,
+            "MaxNumberOfInstallments": null
+          },
+          "Customer":{
+            "Identity":"",
+            "FullName":"",
+            "Email":"",
+            "Phone":""
+          },
+          "Options":{
+            "AntifraudEnabled":true,
+            "ReturnUrl": ""
+          },
+          "Settings":null
+        };
+      }
+
+      Navigator.of(context).push
+        (
+          MaterialPageRoute(builder: (context) => PaymentScreen(checkoutMap))
+      );
+    }
+  }
+
   Widget _buildBody()
   {
-    return Stack
+    return Scaffold
     (
-      children: <Widget>
-      [
-        SingleChildScrollView
+      appBar: AppBar
+      (
+        title: Text("Comprar bilhete", style: TextStyle(fontFamily: "Fredoka")),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView
+      (
+        physics: BouncingScrollPhysics(),
+        child: Column
         (
-          physics: BouncingScrollPhysics(),
-          child: Container
-          (
-            child: Column
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>
+          [
+            Container
               (
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>
-              [
-                SizedBox(height: 120),
-                Container
-                  (
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration
-                    (
-                      border: Border.all(width: 2, color: Colors.grey[700]),
-                      borderRadius: BorderRadius.circular(8)
-                  ),
-                  child: ClipRRect
-                    (
+              margin: EdgeInsets.all(10),
+              decoration: BoxDecoration
+                (
+                  border: Border.all(width: 2, color: Colors.grey[700]),
+                  borderRadius: BorderRadius.circular(8)
+              ),
+              child: ClipRRect
+                (
 
-                    borderRadius: BorderRadius.circular(5),
-                    child: ImageAssets.ticketImage,
-                  ),
-                ),
-
-                Container
-                  (
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-                  child: Column
-                    (
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>
-                    [
-                      _buildDatePicker(),
-                      _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
-                      _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-                      _buildPriceAndButton(),
-                    ],
-                  ),
-                )
-              ],
+                borderRadius: BorderRadius.circular(5),
+                child: ImageAssets.ticketImage,
+              ),
             ),
-          ),
+
+            Container
+              (
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+              child: Column
+                (
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>
+                [
+                  _buildDatePicker(),
+                  _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+                  _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+                  _buildPriceAndButton(),
+                ],
+              ),
+            )
+          ],
         ),
-        CustomBar("Bilheteria"),
-      ],
+      ),
     );
   }
 
@@ -511,6 +720,7 @@ class _TicketTabState extends State<TicketTab>
       itemAmount = adultAmount + kidAmount;
       totalPrice = (adultPrice*adultAmount) + (kidPrice*kidAmount);
       _valueController.text = totalPrice.toString() + "0";
+      isButtonEnabled = (itemAmount > 0);
     });
   }
 
@@ -521,10 +731,10 @@ class _TicketTabState extends State<TicketTab>
     double _screenHeight = MediaQuery.of(context).size.height;
 
     return Container
-    (
-      height: _screenHeight,
-      width: _screenWidth,
-      child: _buildBody()
+      (
+        height: _screenHeight,
+        width: _screenWidth,
+        child: _buildBody()
     );
   }
 }

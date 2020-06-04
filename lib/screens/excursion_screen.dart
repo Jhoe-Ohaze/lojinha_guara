@@ -372,50 +372,50 @@ class _ExcursionScreenState extends State<ExcursionScreen>
 
     Widget _buildBody()
     {
-      return Stack
+      return Scaffold
       (
-        children: <Widget>
-        [
-          SingleChildScrollView
+        appBar: AppBar
+        (
+          title: Text("Marcar uma excursao", style: TextStyle(fontFamily: "Fredoka")),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView
+          (
+          physics: BouncingScrollPhysics(),
+          child: Container
             (
-            physics: BouncingScrollPhysics(),
-            child: Container
+            margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+            child: Column
               (
-              margin: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-              child: Column
-                (
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>
-                [
-                  SizedBox(height: 120),
-                  _createField("Nome", _screenWidth, 100, false, false, nomeController),
-                  Row
-                    (
-                    children: <Widget>
-                    [
-                      _createField("DDD", 70.0, 2, true, true, dddController),
-                      _createField("Telefone", _screenWidth-80, 9, true, false, telController),
-                    ],
-                  ),
-                  Row
-                    (
-                    children: <Widget>
-                    [
-                      _buildDatePicker(),
-                      _buildTypePicker()
-                    ],
-                  ),
-                  Row
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>
+              [
+                _createField("Nome", _screenWidth, 100, false, false, nomeController),
+                Row
                   (
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[_buildSendButton()],
-                  )
-                ],
-              ),
+                  children: <Widget>
+                  [
+                    _createField("DDD", 70.0, 2, true, true, dddController),
+                    _createField("Telefone", _screenWidth-80, 9, true, false, telController),
+                  ],
+                ),
+                Row
+                  (
+                  children: <Widget>
+                  [
+                    _buildDatePicker(),
+                    _buildTypePicker()
+                  ],
+                ),
+                Row
+                  (
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[_buildSendButton()],
+                )
+              ],
             ),
           ),
-          CustomBar("Excursões")
-        ],
+        ),
       );
     }
 
