@@ -457,14 +457,14 @@ class _TicketScreenState extends State<TicketScreen>
     else
     {
       Map<String, dynamic> checkoutMap;
-      int year = _selectedDate.year;
-      int month = _selectedDate.month;
-      int day = _selectedDate.day;
+      String year = _selectedDate.year.toString();
+      String month = _selectedDate.month.toString();
+      String day = _selectedDate.day.toString();
 
       if(kidAmount > 0 && adultAmount == 0)
       {
         checkoutMap = {
-          "OrderNumber":"0",
+          "OrderNumber":"$year$month$day${DateTime.now().millisecondsSinceEpoch}",
           "SoftDescriptor":"Compra de bilhetes para $day/$month/$year",
           "Cart":{
             "Discount":{
