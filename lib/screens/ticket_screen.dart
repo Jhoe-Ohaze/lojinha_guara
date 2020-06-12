@@ -1,14 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lojinha_guara/my_assets/image_assets.dart';
 import 'package:lojinha_guara/screens/payment_screen.dart';
 
+class PreLoadTicketScreen extends StatefulWidget
+{
+  @override
+  _PreLoadTicketScreenState createState() => _PreLoadTicketScreenState();
+}
+
+class _PreLoadTicketScreenState extends State<PreLoadTicketScreen>
+{
+  @override
+  Widget build(BuildContext context)
+  {
+    return Container();
+  }
+}
+
 class TicketScreen extends StatefulWidget
 {
-  final id = 1;
-
   @override
   _TicketScreenState createState() => _TicketScreenState();
 }
@@ -17,7 +32,6 @@ class _TicketScreenState extends State<TicketScreen>
 {
   TextEditingController _adultController;
   TextEditingController _kidController;
-  TextEditingController _dateController;
   TextEditingController _valueController;
 
   int itemAmount = 0;
@@ -49,8 +63,6 @@ class _TicketScreenState extends State<TicketScreen>
 
     _currentDate = DateTime.now().weekday == 2 ? DateTime.now().add(Duration(days: 1)) : DateTime.now();
     _selectedDate = _currentDate;
-    String initDate = DateFormat('dd/MM/yyyy').format(DateTime.now()).toString();
-    _dateController = new TextEditingController(text: initDate);
     _valueController = new TextEditingController(text: "0.00");
   }
 
@@ -263,121 +275,94 @@ class _TicketScreenState extends State<TicketScreen>
       ),
     );
   }
-
-  Widget _buildDatePicker()
+  
+  Widget _buildCalendar(DateTime maxDate)
   {
-    String initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
+    EventList<Event> _markedDateMap = new EventList<Event>
+      (
+        events:
+        {
 
-    void _showDatePicker() async
-    {
-      DateTime selectedDate = await showDatePicker
+        }
+    );
+    
+    return Container
+      (
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration
         (
-          context: context,
-          initialDate: _selectedDate,
-          firstDate: _currentDate.subtract(Duration(days: 1)),
-          lastDate: DateTime(2020, 12, 31),
-          builder: (context, child)
+        border: Border.all(color: Colors.blue, width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: CalendarCarousel<Event>
+      (
+        markedDatesMap: _markedDateMap,
+        height: 420.0,
+        isScrollable: false,
+        customGridViewPhysics: NeverScrollableScrollPhysics(),
+        daysHaveCircularBorder: null,
+        showOnlyCurrentMonthDate: true,
+
+        selectedDateTime: _selectedDate,
+        minSelectedDate: _currentDate.subtract(Duration(days: 1)),
+        maxSelectedDate: maxDate,
+
+        weekendTextStyle: TextStyle(color: Colors.red),
+        weekdayTextStyle: TextStyle(color: Colors.grey),
+
+        selectedDayButtonColor: Colors.lightGreen[400],
+        selectedDayTextStyle: TextStyle(color: Colors.white),
+        selectedDayBorderColor: Colors.transparent,
+
+        todayBorderColor: Colors.transparent,
+        todayButtonColor: Colors.transparent,
+        todayTextStyle: TextStyle(color: weekday == 0 || weekday == 6 ? Colors.red:Colors.black),
+
+        leftButtonIcon: Icon(Icons.chevron_left, color: Colors.blue),
+        rightButtonIcon: Icon(Icons.chevron_right, color: Colors.blue),
+        headerTextStyle: TextStyle(color: Colors.black, fontSize: 20),
+
+        customDayBuilder:
+            (   /// you can provide your own build function to make custom day containers
+            bool isSelectable,
+            int index,
+            bool isSelectedDay,
+            bool isToday,
+            bool isPrevMonthDay,
+            TextStyle textStyle,
+            bool isNextMonthDay,
+            bool isThisMonthDay,
+            DateTime day,
+            )
+        {
+          if(day.isBefore(_currentDate.subtract(Duration(days: 1))))
           {
-            return Theme
+            return Container
               (
-              data: ThemeData.light(),
-              child: child,
+              alignment: Alignment.center,
+              child: Text(day.day.toString(), style: TextStyle(color: Colors.grey[300])),
             );
           }
-      );
-
-      if(selectedDate != null)
-      {
-        int auxWeekday = weekday;
-        setState(()
-        {
-          weekday = selectedDate.weekday;
-          if(weekday != 2)
+          else if (day.weekday == 2)
           {
-            _selectedDate = selectedDate;
-            initDate = DateFormat('dd/MM/yyyy').format(_selectedDate).toString();
-            _dateController.text = initDate;
+            return Container
+              (
+              alignment: Alignment.center,
+              child: Icon(Icons.close, color: Colors.grey[300], size: 20,),
+            );
           }
           else
           {
-            weekday = auxWeekday;
-            _showDialog(1);
+            return null;
           }
-        });
+        },
 
-        if(weekday == 6 || weekday == 7)
+        onDayPressed: (DateTime date, List<Event> events)
         {
-          for(DocumentSnapshot doc in priceList)
-          {
-            if(doc.data['Nome'] == "Adulto FDS")
-              adultPrice = doc.data['Valor'] + 0.00;
-            if(doc.data['Nome'] == "Criança FDS")
-              kidPrice = doc.data['Valor'] + 0.00;
-          }
-        }
-        else
-        {
-          for(DocumentSnapshot doc in priceList)
-          {
-            if(doc.data['Nome'] == "Adulto Semana")
-              adultPrice = doc.data['Valor'] + 0.00;
-            if(doc.data['Nome'] == "Criança FDS")
-              kidPrice = doc.data['Valor'] + 0.00;
-          }
-        }
-      }
-    }
-
-    return GestureDetector
-    (
-      onTap: _showDatePicker,
-      child: Padding
-        (
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-        child: Container
-          (
-          decoration: BoxDecoration
-            (
-            border: Border.all(color: Colors.blue, width: 2),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row
-            (
-            children: <Widget>
-            [
-              Padding(padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text("Data", style: TextStyle(fontSize: 16))),
-              Expanded(child: Container()),
-              Row
-                (
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>
-                [
-                  Container
-                  (
-                    width: 90,
-                    child: TextField
-                    (
-                      enabled: false,
-                      textAlign: TextAlign.center,
-                      controller: _dateController,
-                      decoration: InputDecoration
-                      (
-                        border: InputBorder.none
-                      ),
-                    ),
-                  ),
-
-                  Container
-                    (
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(Icons.calendar_today, color: Colors.blue,),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
+          if(date.isBefore(_currentDate.subtract(Duration(days: 1)))){_showDialog(2);}
+          else if(date.weekday != 2){this.setState(() => _selectedDate = date);}
+          else{_showDialog(1);}
+        },
       ),
     );
   }
@@ -472,12 +457,15 @@ class _TicketScreenState extends State<TicketScreen>
     else
     {
       Map<String, dynamic> checkoutMap;
+      int year = _selectedDate.year;
+      int month = _selectedDate.month;
+      int day = _selectedDate.day;
 
       if(kidAmount > 0 && adultAmount == 0)
       {
         checkoutMap = {
           "OrderNumber":"0",
-          "SoftDescriptor":"Test",
+          "SoftDescriptor":"Compra de bilhetes para $day/$month/$year",
           "Cart":{
             "Discount":{
               "Type":"Percent",
@@ -670,45 +658,21 @@ class _TicketScreenState extends State<TicketScreen>
       body: SingleChildScrollView
       (
         physics: BouncingScrollPhysics(),
-        child: Column
-        (
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>
-          [
-            Container
-              (
-              margin: EdgeInsets.all(10),
-              decoration: BoxDecoration
-                (
-                  border: Border.all(width: 2, color: Colors.grey[700]),
-                  borderRadius: BorderRadius.circular(8)
-              ),
-              child: ClipRRect
-                (
-
-                borderRadius: BorderRadius.circular(5),
-                child: ImageAssets.ticketImage,
-              ),
-            ),
-
-            Container
-              (
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
-              child: Column
-                (
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>
-                [
-                  _buildDatePicker(),
-                  _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
-                  _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
-                  _buildPriceAndButton(),
-                ],
-              ),
-            )
-          ],
-        ),
+        child: Container
+          (
+          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+          child: Column
+            (
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>
+            [
+              _buildCalendar(DateTime(2021)),
+              _buildAmountPicker("Adultos (13+ anos)", _adultController, true),
+              _buildAmountPicker("Crianças (4 - 12 anos)", _kidController, false),
+              _buildPriceAndButton(),
+            ],
+          ),
+        )
       ),
     );
   }
@@ -738,3 +702,4 @@ class _TicketScreenState extends State<TicketScreen>
     );
   }
 }
+
