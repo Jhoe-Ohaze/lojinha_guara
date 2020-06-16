@@ -107,7 +107,7 @@ class _ProfileTabState extends State<ProfileTab>
   {
     Navigator.of(context).push(PageRouteBuilder
       (
-        pageBuilder: (context, animation, secondaryAnimation) => TicketScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => PreLoadTicketScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(0.0, 1.0);
           var end = Offset.zero;

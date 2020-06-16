@@ -18,14 +18,35 @@ class _PreLoadTicketScreenState extends State<PreLoadTicketScreen>
   @override
   Widget build(BuildContext context)
   {
-    return Container();
+    return Scaffold
+    (
+      body: FutureBuilder<QuerySnapshot>
+      (
+        future: Firestore.instance.collection('preco_bilheteria').getDocuments(),
+        builder: (context, snapshot)
+        {
+          switch(snapshot.connectionState)
+          {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+              return Center(child: CircularProgressIndicator());
+            default:
+              List<DocumentSnapshot> docList = snapshot.data.documents.toList();
+              return TicketScreen(docList);
+          }
+        },
+      ),
+    );
   }
 }
 
 class TicketScreen extends StatefulWidget
 {
+  final List<DocumentSnapshot> docList;
+  TicketScreen(this.docList);
+
   @override
-  _TicketScreenState createState() => _TicketScreenState();
+  _TicketScreenState createState() => _TicketScreenState(docList);
 }
 
 class _TicketScreenState extends State<TicketScreen>
@@ -45,18 +66,17 @@ class _TicketScreenState extends State<TicketScreen>
   double kidPrice = 0.00;
   double totalPrice = 0.00;
 
-  bool firstRun = true;
   bool isButtonEnabled = false;
-
   int weekday = 0;
 
   QuerySnapshot snapshot;
-  List<DocumentSnapshot> priceList;
+  final List<DocumentSnapshot> priceList;
+  _TicketScreenState(this.priceList);
 
   @override
   void initState()
   {
-    initPrices();
+    setFirstPrices();
     super.initState();
     _adultController = new TextEditingController(text: adultAmount.toString());
     _kidController = new TextEditingController(text: kidAmount.toString());
@@ -66,13 +86,8 @@ class _TicketScreenState extends State<TicketScreen>
     _valueController = new TextEditingController(text: "0.00");
   }
 
-  void initPrices() async => await setFirstPrices();
-
-  Future<void> setFirstPrices() async
+  void setFirstPrices()
   {
-    snapshot = await Firestore.instance.collection('preco_bilheteria').orderBy('Nome').getDocuments();
-    priceList = snapshot.documents.toList();
-
     if(weekday == 6 || weekday == 7)
     {
       for(DocumentSnapshot doc in priceList)
@@ -323,7 +338,7 @@ class _TicketScreenState extends State<TicketScreen>
         headerTextStyle: TextStyle(color: Colors.black, fontSize: 20),
 
         customDayBuilder:
-            (   /// you can provide your own build function to make custom day containers
+        (   /// you can provide your own build function to make custom day containers
             bool isSelectable,
             int index,
             bool isSelectedDay,
@@ -333,8 +348,7 @@ class _TicketScreenState extends State<TicketScreen>
             bool isNextMonthDay,
             bool isThisMonthDay,
             DateTime day,
-            )
-        {
+        ) {
           if(day.isBefore(_currentDate.subtract(Duration(days: 1))))
           {
             return Container
@@ -458,14 +472,15 @@ class _TicketScreenState extends State<TicketScreen>
     {
       Map<String, dynamic> checkoutMap;
       String year = _selectedDate.year.toString();
-      String month = _selectedDate.month.toString();
-      String day = _selectedDate.day.toString();
+      String month = (_selectedDate.month < 10) ? '0${_selectedDate.month.toString()}' : _selectedDate.month.toString();
+      String day = (_selectedDate.day < 10) ? '0${_selectedDate.day.toString()}' : _selectedDate.day.toString();
+      String id = "$year$month$day$itemAmount${DateTime.now().microsecondsSinceEpoch.toRadixString(16)}";
 
       if(kidAmount > 0 && adultAmount == 0)
       {
         checkoutMap = {
-          "OrderNumber":"$year$month$day${DateTime.now().millisecondsSinceEpoch}",
-          "SoftDescriptor":"Compra de bilhetes para $day/$month/$year",
+          "OrderNumber":id,
+          "SoftDescriptor":"",
           "Cart":{
             "Discount":{
               "Type":"Percent",
@@ -520,8 +535,8 @@ class _TicketScreenState extends State<TicketScreen>
       else if(adultAmount > 0 && kidAmount == 0)
       {
         checkoutMap = {
-          "OrderNumber":"0",
-          "SoftDescriptor":"Test",
+          "OrderNumber":id,
+          "SoftDescriptor":"",
           "Cart":{
             "Discount":{
               "Type":"Percent",
@@ -576,8 +591,8 @@ class _TicketScreenState extends State<TicketScreen>
       else
       {
         checkoutMap = {
-          "OrderNumber":"0",
-          "SoftDescriptor":"Test",
+          "OrderNumber":id,
+          "SoftDescriptor":"",
           "Cart":{
             "Discount":{
               "Type":"Percent",

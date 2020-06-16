@@ -1,8 +1,7 @@
 import 'dart:convert';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentScreen extends StatefulWidget
 {
@@ -60,7 +59,26 @@ class _PaymentScreenState extends State<PaymentScreen>
             default:
               String url = snapshot.data["settings"]["checkoutUrl"];
               print(url);
-              return WebView(initialUrl: url, javascriptMode: JavascriptMode.unrestricted);
+              launch(url);
+              return Scaffold
+              (
+                body: Column
+                (
+                  children: <Widget>
+                  [
+                    Container(margin: EdgeInsets.all(10),
+                        child: Text("Você será redirecionado para a página de pagamento...")),
+                    MaterialButton
+                      (
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      color: Colors.redAccent,
+                      child: Text("Voltar", style: TextStyle(color: Colors.white)),
+                      onPressed: (){Navigator.of(context).pop(); Navigator.of(context).pop();},
+                    ),
+                  ],
+                ),
+              );
           }
         },
       ),
