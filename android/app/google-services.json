@@ -29,14 +29,14 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC0HpiCegs3Id91z-1hPbSWwwj7ew2jHec"
+          "current_key": ""
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "438616143979-jgv86916mvlonek1htu6s845u475a39i.apps.googleusercontent.com",
+              "client_id": "",
               "client_type": 3
             }
           ]
