@@ -27,7 +27,7 @@ class _PaymentScreenState extends State<PaymentScreen>
       headers: <String, String>
       {
         'Content-Type': 'application/json',
-        'MerchantId' : '8df7525e-666d-4c23-bd49-3a4496f3dfb0'
+        'MerchantId' : ''
       },
       body: jsonEncode(checkoutMap));
 
